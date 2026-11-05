@@ -3,7 +3,7 @@ UT1 · PROCESOS: SOLUCIONES DE LA RELACIÓN DE PROCESSBUILDER Y PROCESS
 
 CÓMO ABRIRLO EN INTELLIJ
 1. Descomprime el zip.
-2. En IntelliJ: File > Open... y selecciona la carpeta UT1.procesos
+2. En IntelliJ: File > Open... y selecciona la carpeta ut1-procesos
    (la que contiene este fichero).
 3. Si aparece el aviso "Project JDK is not defined" o "Setup SDK", pulsa en él
    y elige tu JDK (versión 11 o superior).
@@ -41,6 +41,6 @@ IMPORTANTE
   por el nombre de la aplicación, por ejemplo "gnome-calculator".
 
 DESDE LA TERMINAL (alternativa)
-  cd UT1.procesos
+  cd ut1-procesos
   javac -d bin src/PSP/*.java
   java -cp bin PSP.Ejercicio4

@@ -3,7 +3,7 @@ UT1 · EJEMPLOS DE COMUNICACIÓN ENTRE PROCESOS
 
 CÓMO ABRIRLO EN INTELLIJ
 1. Descomprime el zip.
-2. En IntelliJ: File > Open... y selecciona la carpeta UT1_Ejemplos_Comunicacion_Procesos
+2. En IntelliJ: File > Open... y selecciona la carpeta ut1-ejemplos-comunicacion-procesos
    (la que contiene este fichero).
 3. Si aparece el aviso "Project JDK is not defined" o "Setup SDK", pulsa en él
    y elige tu JDK (versión 11 o superior).
@@ -40,6 +40,6 @@ IMPORTANTE
   dejan en la raíz del proyecto.
 
 DESDE LA TERMINAL (alternativa)
-  cd UT1_Ejemplos_Comunicacion_Procesos
+  cd ut1-ejemplos-comunicacion-procesos
   javac -d bin src/PSP/*.java
   java -cp bin PSP.EjemploInputStream

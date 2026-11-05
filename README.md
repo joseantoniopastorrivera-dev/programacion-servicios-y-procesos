@@ -6,10 +6,10 @@ Programación multihilo, procesos concurrentes, sockets de red y comunicación s
 
 ## 🗂️ Estructura del Repositorio
 
-* **`UT0-Repaso/`**: Ejercicios y conceptos base iniciales.
-* **`UT1-Procesos/`**: Ejercicios, teoría y práctica sobre la creación, gestión y comunicación de procesos.
-* **`UT2-Hilos/`**:
-  * **`Apuntes/`**: Teoría, documentación y ejemplos sobre programación multihilo y sincronización.
+* **`ut0-repaso/`**: Ejercicios y conceptos base iniciales.
+* **`ut1-procesos/`**: Ejercicios, teoría y práctica sobre la creación, gestión y comunicación de procesos.
+* **`ut2-hilos/`**:
+  * **`apuntes/`**: Teoría, documentación y ejemplos sobre programación multihilo y sincronización.
 
 ---
 

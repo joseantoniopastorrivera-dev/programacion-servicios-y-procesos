@@ -3,11 +3,11 @@
 Programación concurrente en Java: procesos, hilos y (más adelante) sockets y servicios.
 
 ## Estructura
-- `UT0-Repaso/` — repaso de Java y streams (PDF/PPTX).
-- `UT1-Procesos/Apuntes/` — `PSP_UT1.pdf` y `Ejemplos-En-Clase/` (Lanzador*.java y el proyecto IntelliJ `UT1_Ejemplos_Comunicacion_Procesos`, paquete `PSP`: ProcessBuilder, redirecciones, pipes, inheritIO).
-- `UT1-Procesos/Ejercicios/` — enunciados y proyecto IntelliJ `UT1.procesos` (configuraciones en `.run/`).
-- `UT1-Procesos/Practica/`
-- `UT2-Hilos/Apuntes/` — unidad en curso.
+- `ut0-repaso/` — repaso de Java y streams (PDF/PPTX).
+- `ut1-procesos/apuntes/` — `psp-ut1.pdf` y `ejemplos-en-clase/` (Lanzador*.java y el proyecto IntelliJ `ut1-ejemplos-comunicacion-procesos`, paquete `PSP`: ProcessBuilder, redirecciones, pipes, inheritIO).
+- `ut1-procesos/ejercicios/` — enunciados y proyecto IntelliJ `ut1-procesos` (configuraciones en `run/`).
+- `ut1-procesos/practica/`
+- `ut2-hilos/apuntes/` — unidad en curso.
 
 ## Compilar y ejecutar
 - Proyectos IntelliJ (`.iml`, sin Maven): abrir la carpeta del proyecto en IntelliJ, o `javac -d out src/PSP/*.java && java -cp out PSP.Clase`.
