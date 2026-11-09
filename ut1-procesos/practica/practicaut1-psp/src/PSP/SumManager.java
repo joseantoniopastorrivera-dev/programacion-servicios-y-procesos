@@ -85,9 +85,9 @@ public class SumManager {
 
         ProcessBuilder pb = new ProcessBuilder(rutaJava, "-cp", classpath, "PSP.SumWorker");
 
-        // 2.2 Redirigir la salida de error a registro_trabajadores.log añadiendo al
+        // 2.2 Redirigir la salida de error a workers.log añadiendo al
         // final (append)
-        File log = new File("registro_trabajadores.log");
+        File log = new File("workers.log");
         pb.redirectError(ProcessBuilder.Redirect.appendTo(log));
 
         Process p = pb.start();
