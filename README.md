@@ -6,7 +6,7 @@ Programación multihilo, procesos concurrentes, sockets de red y comunicación s
 
 ## 🗂️ Estructura del Repositorio
 
-* **`ut0-repaso/`**: Ejercicios y conceptos base iniciales.
+* **`ut0-repaso/`**: Ejercicios y conceptos base iniciales. Las soluciones en Java están en `ejercicios-resueltos/`.
 * **`ut1-procesos/`**: Ejercicios, teoría y práctica sobre la creación, gestión y comunicación de procesos.
 * **`ut2-hilos/`**:
   * **`apuntes/`**: Teoría, documentación y ejemplos sobre programación multihilo y sincronización.
