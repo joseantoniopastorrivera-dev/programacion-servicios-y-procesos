@@ -1,0 +1,7 @@
+# Ficheros que generan los propios ejercicios al ejecutarse
+bin/
+pruebas/
+diario.log
+datos/notas_ordenadas.csv
+resultado*.txt
+parcial*.txt

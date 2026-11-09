@@ -8,6 +8,9 @@ Programación multihilo, procesos concurrentes, sockets de red y comunicación s
 
 * **`ut0-repaso/`**: Ejercicios y conceptos base iniciales. Las soluciones en Java están en `ejercicios-resueltos/`.
 * **`ut1-procesos/`**: Ejercicios, teoría y práctica sobre la creación, gestión y comunicación de procesos.
+  * **`apuntes/apuntes-ut1-procesos.md`**: apuntes completos de la UT1 (ProcessBuilder, Process, ProcessHandle, redirecciones, comunicación y diferencias Linux/Windows).
+  * **`ejercicios/soluciones-*.md`**: los 12 ejercicios de ProcessBuilder y los 15 de comunicación explicados línea a línea, con sus reflexiones.
+  * **`soluciones/`**: código de todas las soluciones y de las Tareas 1, 2 y 4, válido en Linux y en Windows (ver `LEEME.md`).
 * **`ut2-hilos/`**:
   * **`apuntes/`**: Teoría, documentación y ejemplos sobre programación multihilo y sincronización.
 
