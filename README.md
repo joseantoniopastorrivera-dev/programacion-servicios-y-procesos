@@ -13,6 +13,8 @@ Programación multihilo, procesos concurrentes, sockets de red y comunicación s
   * **`soluciones/`**: código de todas las soluciones y de las Tareas 1, 2 y 4, válido en Linux y en Windows (ver `LEEME.md`).
 * **`ut2-hilos/`**:
   * **`apuntes/`**: Teoría, documentación y ejemplos sobre programación multihilo y sincronización.
+  * **`ejercicios/`**: relación de ejercicios (`ejercicios-ut2.docx`), proyecto IntelliJ `bloque1-4` sin resolver y `soluciones-ejercicios-ut2.md` con las respuestas.
+  * **`soluciones/bloque1-4/`**: los 14 ejercicios resueltos (hilos, condiciones de carrera, volatile, synchronized, Lock, atómicos, interbloqueo), explicados línea a línea. Igual en Linux y en Windows.
 
 ---
 
