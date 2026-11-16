@@ -74,6 +74,68 @@ Hay 539.777 primos hasta 8.000.000 (1,95 s)     Hay 539.777 primos hasta 8.000.0
 
 > En `ConHilos` se espera con `join(500)` y no con `sleep(500)`: los dos esperan medio segundo, pero `join(500)` **vuelve en cuanto el cálculo termina**, así que el resultado no sale con hasta 0,5 s de retraso.
 
+#### Solución B · con `extends Thread` (la que planteó el profesor)
+
+El ejercicio tiene dos soluciones correctas. La A es la de arriba (`ContarPrimos implements Runnable` + `ConHilos`). La B hace lo mismo heredando de `Thread`: clases `ContarPrimosHilo` y `ConHilosB`, en el mismo paquete. La salida es idéntica (539.777 primos, unos 2 s).
+
+```java
+public class ContarPrimosHilo extends Thread {      // el objeto YA es un hilo
+
+    private final int limite;
+    private int resultado;                          // run() es void: el resultado se guarda aquí
+
+    public ContarPrimosHilo(int limite) {
+        super("calculo");                           // nombre del hilo
+        this.limite = limite;
+    }
+
+    @Override
+    public void run() {                             // se sobrescribe el run() de Thread
+        int cuenta = 0;
+        for (int n = 2; n <= limite; n++) {
+            if (ContarPrimos.esPrimo(n)) cuenta++;
+        }
+        resultado = cuenta;
+    }
+
+    public int getResultado() { return resultado; }
+}
+```
+
+```java
+// En el main de ConHilosB
+ContarPrimosHilo hiloCalculo = new ContarPrimosHilo(LIMITE);   // no hace falta new Thread(...)
+hiloCalculo.start();                                           // start(), nunca run()
+
+while (hiloCalculo.isAlive()) {
+    System.out.println("Sigo atendiendo al usuario...");
+    hiloCalculo.join(500);
+}
+System.out.printf("Hay %,d primos hasta %,d%n", hiloCalculo.getResultado(), LIMITE);
+```
+
+**Lo único que cambia entre A y B es cómo se crea el hilo:**
+
+| | A · `implements Runnable` | B · `extends Thread` |
+|---|---|---|
+| Qué es la clase | Solo la **tarea** | La tarea **y** el hilo |
+| Crear y arrancar | `new Thread(new ContarPrimos(n)).start()` | `new ContarPrimosHilo(n).start()` |
+| Qué se programa | `run()` de la interfaz | `run()` sobrescrito de `Thread` |
+| Herencia | Queda **libre**: puede extender otra clase | **Gastada**: ya no puede extender nada más |
+| Métodos del hilo dentro de la clase | Con `Thread.currentThread().getName()` | Directos: `getName()`, `isInterrupted()`… |
+| Reutilizar la tarea sin hilo | Sí: `calculo.contar()` (lo usa `SinHilos`) | No tiene sentido: la clase es un hilo |
+| Dar la tarea a un `ExecutorService` | Sí | No es lo previsto |
+
+**¿Cuándo es mejor cada una?**
+
+- **`extends Thread`** cuando el programa es pequeño, la clase no necesita heredar de nada y cada objeto se va a usar **una sola vez como hilo**. Es más corta y se lee mejor: por eso es buena para empezar y para un examen, si el enunciado no obliga a otra cosa.
+- **`implements Runnable`** cuando la clase **ya hereda de otra** (ejercicio 2.4: `Taxi extends Vehiculo`; aquí es obligatorio, porque Java no permite heredar de dos clases), cuando la misma tarea se quiere ejecutar también **sin hilo** (como hace `SinHilos`), cuando varios hilos deben compartir **el mismo objeto** tarea, o cuando se va a usar un *pool* de hilos. Separa el **qué** se hace del **cómo** se ejecuta, y por eso es la forma recomendada en general.
+
+**Respuesta corta para clase:** las dos funcionan igual. `extends Thread` es más simple; `Runnable` es más flexible, porque no gasta la única herencia que tiene la clase y separa la tarea del hilo.
+
+> ⚠️ **Trampa común a las dos:** llamar a `run()` en vez de a `start()`. Compila y da el mismo resultado, pero **no crea ningún hilo**: el cálculo lo hace el propio main y el programa vuelve a quedarse «colgado», igual que `SinHilos`.
+> ⚠️ Un hilo **solo se puede arrancar una vez**. Un segundo `start()` sobre el mismo objeto lanza `IllegalThreadStateException`; hay que crear otro objeto.
+
 ---
 
 ## Bloque 2 · Crear y gestionar hilos

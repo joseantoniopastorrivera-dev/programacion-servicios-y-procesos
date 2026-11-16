@@ -21,7 +21,7 @@ Hay un paquete por ejercicio, con las clases ya creadas **pero sin desarrollar**
 | Ejercicio | Paquete | Clase con el `main` |
 |---|---|---|
 | 1.1 Descargas | `bloque1.descargas` | `DescargasSecuencial`, `DescargasConHilos` |
-| 1.2 Tarea pesada sin bloquear | `bloque1.tarea_pesada` | `SinHilos`, `ConHilos` |
+| 1.2 Tarea pesada sin bloquear | `bloque1.tarea_pesada` | `SinHilos`, `ConHilos` (A: `Runnable`), `ConHilosB` (B: `extends Thread`) |
 | 2.1 Estados de un hilo | `bloque2.estados` | `ObservarEstados` |
 | 2.2 El examen | `bloque2.examen` | `Examen`, `ExamenVariosAlumnos` (ampliación) |
 | 2.3 Autoguardado | `bloque2.autoguardado` | `Editor` |
