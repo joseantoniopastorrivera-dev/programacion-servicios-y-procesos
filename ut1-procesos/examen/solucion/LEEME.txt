@@ -1,0 +1,31 @@
+EXAMEN RA1 · PARTE PRÁCTICA
+==========================================
+
+CÓMO ABRIRLO EN INTELLIJ
+1. Descomprime el zip.
+2. En IntelliJ: File > Open... y selecciona la carpeta UT1_Examen_Alumno
+   (la que contiene este fichero).
+3. Si aparece el aviso "Project JDK is not defined" o "Setup SDK", pulsa en él
+   y elige tu JDK (versión 11 o superior).
+
+CLASES QUE TIENES QUE COMPLETAR (tienen un // TODO)
+  Paquete PSP.c1 (ejercicio C1):
+    EjecutorTareas      Ejercicio C1
+    Tarea               YA ESTÁ HECHA: no la modifiques
+  Paquete PSP.c2 (ejercicio C2):
+    HijoEstadistica     Ejercicio C2.1
+    Padre               Ejercicio C2.2 y C2.4 (reflexión en el comentario inicial)
+
+CONFIGURACIONES DE EJECUCIÓN (desplegable junto al botón de ejecutar)
+  C1 · EjecutorTareas 3 0 5 (termina bien)
+  C1 · EjecutorTareas 2 4 5 (termina con error)
+  C1 · EjecutorTareas 8 0 3 (se destruye)
+  C2 · Padre
+
+IMPORTANTE
+- El proyecto compila en la carpeta bin.
+- IntelliJ ejecuta los programas desde la raíz del proyecto: las rutas
+  datos/grupoA.txt, tarea.log y errores.log funcionan tal cual.
+
+ENTREGA
+- Un zip con el proyecto completo, SIN la carpeta bin.

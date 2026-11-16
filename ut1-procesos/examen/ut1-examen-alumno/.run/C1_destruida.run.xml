@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="C1 · EjecutorTareas 8 0 3 (se destruye)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="PSP.c1.EjecutorTareas" />
+    <module name="UT1_Examen_Alumno" />
+    <option name="PROGRAM_PARAMETERS" value="8 0 3" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
