@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>UT2 · Hilos · José Antonio Pastor Rivera</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+  :root {
+    --tinta: #1d2330; --suave: #5b6475; --linea: #d9dee8;
+    --acento: #2f5bd3; --acento-claro: #e8eefc;
+    --b1: #2f5bd3; --b2: #0f8a6a; --b3: #c2410c; --b4: #7c3aed;
+    --codigo: #f5f7fb; --mal: #b42318; --bien: #0f7a3e;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { font-family: "Segoe UI", "Inter", Arial, sans-serif; color: var(--tinta);
+         font-size: 10.3pt; line-height: 1.5; margin: 0; background: #fff; }
+  a { color: var(--acento); text-decoration: none; }
+  h1, h2, h3 { line-height: 1.2; }
+  pre, code { font-family: "Cascadia Mono", "Consolas", "DejaVu Sans Mono", monospace; }
+  code { background: var(--codigo); padding: 0 3px; border-radius: 3px; font-size: 9.2pt; }
+  pre { background: var(--codigo); border: 1px solid var(--linea); border-radius: 6px;
+        padding: 8px 10px; font-size: 8.4pt; line-height: 1.32; white-space: pre; overflow: hidden;
+        break-inside: avoid; margin: 6px 0 10px; }
+  pre.esquema { background: #fbfcff; border-left: 4px solid var(--acento); }
+  pre.salida { background: #111827; color: #e5e7eb; border-color: #111827; }
+  pre.salida .mal { color: #fca5a5; } pre.salida .bien { color: #86efac; }
+  .etiqueta { font-size: 7.6pt; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+              color: var(--suave); margin: 10px 0 0; }
+
+  /* ---------- Portada ---------- */
+  .portada { height: 255mm; display: flex; flex-direction: column; justify-content: space-between;
+             page-break-after: always; }
+  .portada .franja { height: 10px; background: linear-gradient(90deg, var(--b1), var(--b2), var(--b3), var(--b4));
+                     border-radius: 5px; }
+  .portada .modulo { font-size: 11pt; color: var(--suave); letter-spacing: .12em; text-transform: uppercase; margin-top: 40mm; }
+  .portada h1 { font-size: 34pt; margin: 6px 0 4px; }
+  .portada .sub { font-size: 15pt; color: var(--suave); margin: 0; }
+  .portada pre.logo { background: none; border: none; font-size: 9.5pt; color: var(--acento); margin-top: 18mm; }
+  .ficha { border-top: 1px solid var(--linea); padding-top: 10px; display: grid;
+           grid-template-columns: 34mm 1fr; row-gap: 4px; font-size: 10.5pt; }
+  .ficha b { color: var(--suave); font-weight: 600; }
+
+  /* ---------- Índice ---------- */
+  .indice { page-break-after: always; }
+  .indice h2 { font-size: 20pt; margin: 0 0 4px; }
+  .indice .ayuda { color: var(--suave); margin: 0 0 12px; }
+  .bloque-idx { border: 1px solid var(--linea); border-radius: 8px; margin-bottom: 9px; overflow: hidden;
+                break-inside: avoid; }
+  .bloque-idx .cab { display: flex; align-items: center; gap: 10px; padding: 7px 12px; color: #fff; font-weight: 700; }
+  .bloque-idx .cab .num { font-size: 15pt; opacity: .9; }
+  .bloque-idx a.item { display: flex; align-items: baseline; gap: 10px; padding: 5px 12px;
+                       color: var(--tinta); border-top: 1px solid var(--linea); }
+  .bloque-idx a.item .cod { font-family: "Cascadia Mono", Consolas, monospace; font-weight: 700; width: 11mm; }
+  .bloque-idx a.item .tit { flex: 1; }
+  .bloque-idx a.item .tema { color: var(--suave); font-size: 8.8pt; }
+  .bloque-idx a.item .ir { color: var(--acento); font-weight: 700; }
+  .idx-extra { display: flex; gap: 8px; }
+  .idx-extra a { flex: 1; border: 1px solid var(--linea); border-radius: 8px; padding: 7px 12px; color: var(--tinta); }
+  .idx-extra a b { color: var(--acento); }
+
+  /* ---------- Secciones ---------- */
+  .bloque { page-break-before: always; }
+  .bloque > h2 { font-size: 19pt; margin: 0 0 2px; padding-bottom: 6px; border-bottom: 3px solid currentColor; }
+  .bloque > .intro { color: var(--suave); margin: 4px 0 12px; }
+  .ej { margin: 0 0 14px; }
+  .ej + .ej { border-top: 1px dashed var(--linea); padding-top: 10px; }
+  .ej h3 { font-size: 13.5pt; margin: 6px 0 2px; display: flex; align-items: baseline; gap: 8px; }
+  .ej h3 .cod { font-family: "Cascadia Mono", Consolas, monospace; color: #fff; padding: 1px 7px;
+                border-radius: 5px; font-size: 11pt; }
+  .ej h3 .volver { margin-left: auto; font-size: 8.5pt; font-weight: 400; }
+  .meta { font-size: 8.8pt; color: var(--suave); margin: 0 0 4px; }
+  .enunciado { background: var(--acento-claro); border-radius: 6px; padding: 6px 10px; margin: 4px 0 6px; font-size: 9.6pt; }
+  ol.resp { padding-left: 18px; margin: 4px 0; }
+  ol.resp > li { margin-bottom: 5px; }
+  ol.resp > li > b:first-child { color: var(--tinta); }
+  .nota { border-left: 3px solid var(--b3); background: #fff7ed; padding: 5px 10px; border-radius: 0 6px 6px 0; font-size: 9.4pt; margin: 6px 0; break-inside: avoid; }
+  table { border-collapse: collapse; width: 100%; font-size: 9pt; margin: 6px 0 10px; break-inside: avoid; }
+  th, td { border: 1px solid var(--linea); padding: 3px 6px; text-align: left; vertical-align: top; }
+  th { background: var(--codigo); }
+  .b1 { color: var(--b1); } .b2 { color: var(--b2); } .b3 { color: var(--b3); } .b4 { color: var(--b4); }
+  .bg1 { background: var(--b1); } .bg2 { background: var(--b2); } .bg3 { background: var(--b3); } .bg4 { background: var(--b4); }
+  .mal { color: var(--mal); font-weight: 600; } .bien { color: var(--bien); font-weight: 600; }
+  .dos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dos pre { margin: 0; }
+</style>
+</head>
+<body>
+
+<!-- ================================================================ PORTADA -->
+<section class="portada">
+  <div>
+    <div class="franja"></div>
+    <div class="modulo">Programación de Servicios y Procesos · 2º DAM</div>
+    <h1>UT2 · Programación multihilo</h1>
+    <p class="sub">Relación de ejercicios · bloques 1 a 4 · código, respuestas y esquemas</p>
+<pre class="logo">
+   main ──┬──▶ hilo 1 ──────────────┐
+          ├──▶ hilo 2 ────────┐     │
+          ├──▶ hilo 3 ───┐    │     │
+          │              ▼    ▼     ▼
+          └────────── join() ◀──────┘ ──▶ resultado
+</pre>
+  </div>
+  <div class="ficha">
+    <b>Alumno</b><span>José Antonio Pastor Rivera</span>
+    <b>Centro</b><span>IES Isidra de Guzmán · Alcalá de Henares</span>
+    <b>Curso</b><span>2026-2027 · 2º DAM · PSP</span>
+    <b>Entrega</b><span>Entrega ejercicios UT2 · 19 de noviembre de 2026</span>
+    <b>Contenido</b><span>Proyecto IntelliJ (<code>intellij/ut2-hilos</code>), proyecto VS Code con menú (<code>vscode/ut2-hilos</code>) y este documento</span>
+  </div>
+</section>
+
+<!-- ================================================================ ÍNDICE -->
+<section class="indice" id="indice">
+  <h2>Índice</h2>
+  <p class="ayuda">Pulsa cualquier ejercicio para ir directamente a él. Cada ejercicio tiene un enlace «↑ índice» para volver aquí.</p>
+
+  <div class="idx-extra" style="margin-bottom:9px">
+    <a href="#proyecto"><b>0 ·</b> Cómo está organizado y cómo se ejecuta (menú)</a>
+    <a href="#resumen"><b>R ·</b> Resumen de herramientas</a>
+  </div>
+
+  <div class="bloque-idx">
+    <div class="cab bg1"><span class="num">1</span> Hilos y procesos</div>
+    <a class="item" href="#e11"><span class="cod">1.1</span><span class="tit">Descargas</span><span class="tema">secuencial vs. concurrente</span><span class="ir">→</span></a>
+    <a class="item" href="#e12"><span class="cod">1.2</span><span class="tit">Tarea pesada sin bloquear</span><span class="tema">Runnable vs. extends Thread</span><span class="ir">→</span></a>
+  </div>
+  <div class="bloque-idx">
+    <div class="cab bg2"><span class="num">2</span> Crear y gestionar hilos</div>
+    <a class="item" href="#e21"><span class="cod">2.1</span><span class="tit">Estados de un hilo</span><span class="tema">getState(), wait/notify</span><span class="ir">→</span></a>
+    <a class="item" href="#e22"><span class="cod">2.2</span><span class="tit">El examen</span><span class="tema">join(ms), interrupt()</span><span class="ir">→</span></a>
+    <a class="item" href="#e23"><span class="cod">2.3</span><span class="tit">Autoguardado</span><span class="tema">hilos daemon</span><span class="ir">→</span></a>
+    <a class="item" href="#e24"><span class="cod">2.4</span><span class="tit">Taxis</span><span class="tema">herencia + Runnable</span><span class="ir">→</span></a>
+  </div>
+  <div class="bloque-idx">
+    <div class="cab bg3"><span class="num">3</span> Compartir información</div>
+    <a class="item" href="#e31"><span class="cod">3.1</span><span class="tit">El informe de ventas</span><span class="tema">condiciones de Bernstein</span><span class="ir">→</span></a>
+    <a class="item" href="#e32"><span class="cod">3.2</span><span class="tit">El jardín ornamental</span><span class="tema">condición de carrera</span><span class="ir">→</span></a>
+    <a class="item" href="#e33"><span class="cod">3.3</span><span class="tit">El vigilante</span><span class="tema">visibilidad, volatile</span><span class="ir">→</span></a>
+    <a class="item" href="#e34"><span class="cod">3.4</span><span class="tit">Venta de entradas</span><span class="tema">comprobar-y-actuar</span><span class="ir">→</span></a>
+  </div>
+  <div class="bloque-idx">
+    <div class="cab bg4"><span class="num">4</span> Sincronización</div>
+    <a class="item" href="#e41"><span class="cod">4.1</span><span class="tit">Arregla el jardín</span><span class="tema">synchronized, Lock, Atomic</span><span class="ir">→</span></a>
+    <a class="item" href="#e42"><span class="cod">4.2</span><span class="tit">Taquillas sin overbooking</span><span class="tema">sección crítica mínima</span><span class="ir">→</span></a>
+    <a class="item" href="#e43"><span class="cod">4.3</span><span class="tit">La máquina de turnos</span><span class="tema">compareAndSet (CAS)</span><span class="ir">→</span></a>
+    <a class="item" href="#e44"><span class="cod">4.4</span><span class="tit">El banco</span><span class="tema">interbloqueo y orden de cerrojos</span><span class="ir">→</span></a>
+  </div>
+</section>
+
+<!-- ================================================================ 0. PROYECTO -->
+<section id="proyecto">
+  <h2 style="font-size:19pt;margin:0 0 6px;padding-bottom:6px;border-bottom:3px solid var(--acento)">0 · Organización y ejecución</h2>
+  <p>La entrega incluye <b>el mismo código en dos proyectos</b>: uno para IntelliJ IDEA y otro para Visual Studio Code. Cada ejercicio va en su propio paquete, como piden las normas, y cada clase explica línea a línea en sus comentarios qué hace y por qué.</p>
+<pre class="esquema">
+ut2-psp-JoseAntonio_PastorRivera.zip
+├─ ut2-psp-JoseAntonio_PastorRivera.pdf   ← este documento
+├─ intellij/ut2-hilos/
+│  ├─ .idea/  (configuración «Menú UT2»)
+│  ├─ ut2-hilos.iml
+│  └─ src/  bloque1 … bloque4 · menu
+└─ vscode/ut2-hilos/
+   ├─ .vscode/  (settings.json · launch.json)
+   ├─ ejecutar.ps1 · ejecutar.sh
+   └─ src/  bloque1 … bloque4 · menu
+</pre>
+  <p><b>Menú.</b> La clase <code>menu.Menu</code> muestra los 18 programas con <code>main</code> y ejecuta el elegido (o todos, con <code>T</code>). Cada ejercicio se lanza en un <b>proceso hijo</b> con <code>ProcessBuilder</code> e <code>inheritIO()</code>, lo visto en la UT1:</p>
+<pre class="esquema">
+  menu.Menu  (proceso padre, espera en el Scanner)
+     │ 1) new ProcessBuilder(java, "-cp", cp, clase)
+     │ 2) inheritIO()  → el hijo escribe en esta consola
+     ▼
+  JVM hija: bloque3.jardin.Jardin.main()
+     │   …sus hilos: puerta Norte, puerta Sur…
+     ▼ 3) waitFor()  → el padre espera a que termine
+  vuelta al menú (con código de salida y tiempo)
+</pre>
+  <p><b>Por qué un proceso por ejercicio y no llamar al <code>main</code> directamente:</b> si un ejercicio deja hilos vivos (el vigilante del 3.3 es daemon y nunca acaba solo), mueren con su proceso; cada ejercicio arranca con una JVM limpia (los contadores <code>static</code> empiezan en 0 y el JIT no viene «caliente» de otro ejercicio, así que los tiempos son comparables); y el código de los ejercicios no se modifica. El hijo se lanza con el <b>mismo JDK</b> (<code>java.home</code>) y el <b>mismo classpath</b> que el menú.</p>
+  <table>
+    <tr><th></th><th>IntelliJ IDEA</th><th>VS Code</th></tr>
+    <tr><td>Abrir</td><td><i>File → Open…</i> → <code>intellij/ut2-hilos</code></td><td><i>File → Open Folder…</i> → <code>vscode/ut2-hilos</code> (Extension Pack for Java)</td></tr>
+    <tr><td>Menú</td><td>Configuración «Menú UT2 (elegir ejercicio)» → ▶</td><td><i>Run and Debug</i> → «Menú UT2» → F5, o <code>.\ejecutar.ps1</code></td></tr>
+    <tr><td>Un ejercicio</td><td>▶ junto a su <code>main</code></td><td>Configuración «Ejercicio abierto en el editor»</td></tr>
+    <tr><td>JDK</td><td colspan="2">21 o superior. Probado con JDK 25 en Windows 11 (12 núcleos).</td></tr>
+  </table>
+  <p class="meta">Todas las salidas de este documento son <b>reales</b>: se obtuvieron el 19/11/2026 ejecutando la opción <code>T</code> del menú. Con hilos los números cambian de una ejecución a otra, y eso es parte de lo que se pide observar.</p>
+</section>
+
+<!-- ================================================================ BLOQUE 1 -->
+<section class="bloque b1">
+<h2>Bloque 1 · Hilos y procesos</h2>
+<p class="intro">Qué gana un programa al repartir su trabajo en varios hilos, y qué no puede ganar.</p>
+
+<div class="ej" id="e11">
+  <h3><span class="cod bg1">1.1</span> Descargas <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque1.descargas</code> · <code>Descarga implements Runnable</code> · mains <code>DescargasSecuencial</code> y <code>DescargasConHilos</code></p>
+  <div class="enunciado">Cinco ficheros (40, 15, 25, 10 y 30 MB) a 10 MB/s. Una versión los baja uno detrás de otro y otra a la vez; cada descarga indica el tiempo transcurrido desde el arranque.</div>
+  <div class="etiqueta">Esquema</div>
+<pre class="esquema">
+SECUENCIAL (solo main)          tiempo (s) →
+0         4    5,5      8  9          12
+├─video───┼fotos┼apuntes─┼mus┼──juego──┤  = SUMA
+
+CON HILOS (un hilo por fichero)
+0    1   1,5   2,5  3    4
+├mus─┤                         Thread-3
+├fotos─┤                       Thread-1
+├apuntes───┤                   Thread-2
+├juego───────┤                 Thread-4
+├video───────────┤             Thread-0  = la MÁS LARGA
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+video.mp4    (40 MB) terminada a los  4,00 s  [main]
+fotos.zip    (15 MB) terminada a los  5,53 s  [main]
+apuntes.pdf  (25 MB) terminada a los  8,03 s  [main]
+musica.mp3   (10 MB) terminada a los  9,03 s  [main]
+juego.iso    (30 MB) terminada a los 12,03 s  [main]
+Todas terminadas a los 12,03 s
+──────────────────────────────────────────────────────
+musica.mp3   (10 MB) terminada a los  1,01 s  [Thread-3]
+fotos.zip    (15 MB) terminada a los  1,51 s  [Thread-1]
+apuntes.pdf  (25 MB) terminada a los  2,51 s  [Thread-2]
+juego.iso    (30 MB) terminada a los  3,01 s  [Thread-4]
+video.mp4    (40 MB) terminada a los  4,01 s  [Thread-0]
+Todas terminadas a los 4,01 s
+</pre>
+  <ol class="resp">
+    <li><b>¿Cuánto tarda cada versión?</b> La secuencial unos <b>12 s</b>, la <b>suma</b> de todas (4 + 1,5 + 2,5 + 1 + 3), porque cada descarga empieza cuando acaba la anterior. La concurrente unos <b>4 s</b>, lo que tarda <b>la más larga</b> (video.mp4): las cinco esperas transcurren a la vez.</li>
+    <li><b>¿En qué orden terminan?</b> En la secuencial, en el <b>orden del programa</b>. Con hilos, <b>de menor a mayor tamaño</b> (música, fotos, apuntes, juego, vídeo): todas empiezan a la vez y acaba antes la que menos tiene que bajar. El nombre del hilo (<code>Thread-3</code>) no sigue el orden en que terminan.</li>
+    <li><b>¿Y si los 10 MB/s fueran en total?</b> Ya <b>no</b> compensaría: 120 MB a 10 MB/s son 12 s se haga como se haga, e incluso empeoraría un poco por los cambios de contexto. Los hilos aprovechan esperas y núcleos, pero <b>no crean recursos</b>: no aumentan el ancho de banda ni la velocidad de un recurso compartido que sea el cuello de botella.</li>
+  </ol>
+</div>
+
+<div class="ej" id="e12">
+  <h3><span class="cod bg1">1.2</span> Tarea pesada sin bloquear <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque1.tarea_pesada</code> · A: <code>ContarPrimos implements Runnable</code> + <code>ConHilos</code> · B: <code>ContarPrimosHilo extends Thread</code> + <code>ConHilosB</code> · sin hilos: <code>SinHilos</code></p>
+  <div class="enunciado">Contar los primos hasta 8.000.000 mostrando cada medio segundo «Sigo atendiendo al usuario...». Versión sin hilos y versión con hilos.</div>
+  <div class="etiqueta">Esquema</div>
+<pre class="esquema">
+SIN HILOS                 CON HILOS
+main                      main            calculo
+ │ contar() ████████       │ start() ──────▶ │ ████
+ │ (2 s sin responder)     │ «Sigo…»         │ ████
+ │                         │ join(500)       │ ████
+ ▼ resultado               │ «Sigo…»         │ ████
+                           │ join(500) ◀─────┘ fin
+                           ▼ resultado
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+SinHilos:   Sigo atendiendo al usuario...      ← antes del cálculo
+            (≈ 2 s sin que salga nada)
+            Sigo atendiendo al usuario...
+            Hay 539.777 primos hasta 8.000.000 (1,91 s)
+ConHilos:   Sigo atendiendo al usuario...  ×5 (cada 0,5 s)
+            Hay 539.777 primos hasta 8.000.000 (2,03 s)
+ConHilosB:  Sigo atendiendo al usuario...  ×4
+            Hay 539.777 primos hasta 8.000.000 (1,95 s)
+</pre>
+  <ol class="resp">
+    <li><b>¿Qué ocurre en cada versión?</b> Sin hilos, el <code>main</code> está dentro de <code>contar()</code> y no puede ejecutar ningún <code>println</code>: el programa parece <b>colgado</b> hasta que acaba. Con hilos, el cálculo va a otro hilo y el <code>main</code> sigue respondiendo cada medio segundo.</li>
+    <li><b>¿Qué ventaja ilustra?</b> La <b>capacidad de respuesta</b>: hacer un trabajo largo sin dejar de atender al usuario. Es lo que hace una interfaz gráfica para no congelarse.</li>
+    <li><b>¿Tarda menos con hilos?</b> <b>No</b>, tarda lo mismo o algo más (2,03 s frente a 1,91 s): el cálculo sigue en <b>un solo hilo</b>, y se suma el coste de crear el hilo y de imprimir. Para ir más rápido habría que <b>repartir</b> el rango entre varios hilos.</li>
+  </ol>
+  <div class="nota">Se espera con <code>join(500)</code> y no con <code>sleep(500)</code>: los dos esperan medio segundo, pero <code>join(500)</code> vuelve <b>en cuanto termina el cálculo</b>. Se entregan las dos formas de crear el hilo: <b>A</b> (<code>implements Runnable</code>, deja libre la herencia y separa tarea de hilo) y <b>B</b> (<code>extends Thread</code>, más corta). Trampa típica: llamar a <code>run()</code> en vez de <code>start()</code> no crea ningún hilo.</div>
+</div>
+</section>
+
+<!-- ================================================================ BLOQUE 2 -->
+<section class="bloque b2">
+<h2>Bloque 2 · Crear y gestionar hilos</h2>
+<p class="intro">Ciclo de vida de un hilo, esperas con límite, interrupciones y hilos daemon.</p>
+
+<div class="ej" id="e21">
+  <h3><span class="cod bg2">2.1</span> Estados de un hilo <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque2.estados</code> · <code>HiloObservado</code> + main <code>ObservarEstados</code></p>
+  <div class="enunciado">Un hilo debe pasar al menos por NEW, RUNNABLE, TIMED_WAITING, WAITING y TERMINATED. El main lo observa y muestra la secuencia sin repetir estados seguidos.</div>
+  <div class="etiqueta">Esquema</div>
+<pre class="esquema">
+         start()            sleep(300)
+  NEW ─────────▶ RUNNABLE ─────────────▶ TIMED_WAITING
+                  ▲  │  ▲                      │ pasan 300 ms
+                  │  │  └──────────────────────┘
+                  │  │ cerrojo.wait()
+                  │  ▼
+                  │ WAITING ── notify() del main ──┐
+                  │                                ▼
+                  └──── recupera el cerrojo ── BLOCKED
+  fin de run()
+  RUNNABLE ─────────▶ TERMINATED
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+Secuencia de estados del hilo:
+NEW → RUNNABLE → TIMED_WAITING → RUNNABLE → WAITING
+    → BLOCKED → RUNNABLE → TERMINATED
+</pre>
+  <ol class="resp">
+    <li><b>TIMED_WAITING y WAITING.</b> Para TIMED_WAITING el hilo hace <code>Thread.sleep(300)</code> (también valdrían <code>join(ms)</code> o <code>wait(ms)</code>): espera <b>con límite</b> y se despierta solo. Para WAITING hace <code>cerrojo.wait()</code> sin tiempo (o valdría <code>join()</code>): espera <b>indefinida</b>, solo sale si otro hilo le avisa con <code>notify()</code> o le interrumpe.</li>
+    <li><b>Estados inesperados.</b> <b>BLOCKED</b>: <code>wait()</code> suelta el cerrojo, y al recibir el <code>notify()</code> el hilo tiene que volver a cogerlo, pero lo tiene el <code>main</code> dentro de su <code>synchronized</code>; mientras tanto está bloqueado esperando un cerrojo. También aparece <b>RUNNABLE entre TIMED_WAITING y WAITING</b>: al despertar ejecuta el <code>synchronized</code> y el <code>wait()</code>. Además, RUNNABLE significa «listo para ejecutarse», no necesariamente «usando la CPU».</li>
+  </ol>
+</div>
+
+<div class="ej" id="e22">
+  <h3><span class="cod bg2">2.2</span> El examen <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque2.examen</code> · <code>Alumno</code> + mains <code>Examen</code> y <code>ExamenVariosAlumnos</code> (ampliación)</p>
+  <div class="enunciado">20 preguntas de 200-600 ms cada una y 5 s de tiempo. Si no termina, se le retira el examen y deja de escribir en ese momento. Ampliación: cinco alumnos con los mismos 5 s.</div>
+  <div class="etiqueta">Esquema</div>
+<pre class="esquema">
+profesor (main)                 alumno (hilo)
+ │ start() ────────────────────▶ │ pregunta 1 (sleep)
+ │ join(5000)  … espera …        │ pregunta 2 (sleep)
+ │                               │ …
+ │ ¿isAlive()? → sí              │ pregunta 12 (sleep)
+ │ interrupt() ────────────────▶ ✖ InterruptedException
+ ▼ «11 de 20, retirado»          ▼ deja de escribir
+
+AMPLIACIÓN: límite COMÚN, no 5 s a cada uno
+ límite = ahora + 5000
+ para cada alumno: queda = límite − ahora
+                   si queda > 0 → join(queda)
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+Ana ha contestado 11 de 20 preguntas. NO terminó a tiempo: se le retiró el examen.
+──────────────────────────────────────────────────────
+Ana    12/20 preguntas  examen retirado
+Luis   11/20 preguntas  examen retirado
+Marta  12/20 preguntas  examen retirado
+Pablo  12/20 preguntas  examen retirado
+Sara   11/20 preguntas  examen retirado      (total ≈ 5,1 s)
+</pre>
+  <ol class="resp">
+    <li><b>¿Cómo sabe el profesor si ha terminado y cómo se entera el alumno?</b> El profesor hace <code>join(5000)</code>, que espera <b>como mucho</b> 5 s, y luego pregunta <code>isAlive()</code>. Para retirar el examen llama a <code>interrupt()</code>: como el alumno está casi siempre en <code>Thread.sleep()</code>, se despierta al momento con <code>InterruptedException</code> y en el <code>catch</code> deja de escribir (la pregunta a medias no cuenta). Si estuviera calculando, tendría que comprobar <code>isInterrupted()</code> en su bucle.</li>
+    <li><b>¿Por qué no basta con esperar 5 s a cada alumno?</b> Porque varios <code>join(5000)</code> seguidos <b>suman</b> sus esperas: el último alumno podría tener hasta 25 s. Se usa una <b>hora límite común</b> y cada <code>join</code> recibe solo el tiempo que <b>queda</b>. Cuidado: si queda 0 no se llama a <code>join(0)</code>, porque significa «esperar sin límite».</li>
+  </ol>
+</div>
+
+<div class="ej" id="e23">
+  <h3><span class="cod bg2">2.3</span> Autoguardado <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque2.autoguardado</code> · <code>Autoguardado</code> (bucle <code>while (true)</code>) + main <code>Editor</code></p>
+  <div class="enunciado">El editor guarda cada segundo con un bucle sin condición de fin. El usuario escribe 4 s (una palabra cada 300 ms), cierra el editor y el programa debe terminar.</div>
+  <div class="etiqueta">Esquema</div>
+<pre class="esquema">
+             0s     1s     2s     3s     4s
+main         ├─escribe palabras cada 300 ms─┤ fin
+autoguardado ├──────■─────■─────■─────■─┤×
+                                         (daemon)
+
+La JVM termina cuando acaban los hilos NO daemon:
+  hilo normal  → la JVM lo espera → no acaba nunca
+  setDaemon(true) → la JVM lo corta al acabar main
+</pre>
+  <div class="etiqueta">Salida real (resumida)</div>
+<pre class="salida">
+El usuario escribe: Había
+El usuario escribe: una
+El usuario escribe: vez
+   [autoguardado 1] 14 caracteres guardados
+…
+   [autoguardado 4] 67 caracteres guardados
+El usuario escribe: lo
+El usuario cierra el editor (14 palabras). Fin del programa.
+</pre>
+  <ol class="resp">
+    <li><b>¿Qué ocurre si no se hace nada especial?</b> El programa <b>no termina nunca</b>: el <code>main</code> acaba, pero la JVM solo termina cuando acaban todos los hilos <b>no daemon</b>, y el autoguardado tiene un <code>while (true)</code>. Habría que pararlo a mano.</li>
+    <li><b>¿Cómo se consigue que termine?</b> Con <code>autoguardado.setDaemon(true)</code> <b>antes</b> de <code>start()</code> (después lanza <code>IllegalThreadStateException</code>): la JVM no espera a los hilos daemon. <b>Otra forma</b>, más limpia: <code>interrupt()</code> al cerrar el editor; el <code>sleep(1000)</code> lanza <code>InterruptedException</code> y el hilo termina por sí mismo, incluso con un último guardado. El daemon se corta de golpe. (<code>System.exit(0)</code> también funcionaría, pero mata todos los hilos sin dejarles terminar.)</li>
+  </ol>
+  <div class="nota">El documento (<code>StringBuilder</code>) lo usan los dos hilos; por eso escribir y copiar se hace dentro de <code>synchronized (documento)</code>, para que el autoguardado no copie un texto a medio modificar.</div>
+</div>
+
+<div class="ej" id="e24">
+  <h3><span class="cod bg2">2.4</span> Taxis <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque2.taxis</code> · <code>Vehiculo</code> (sin modificar) · <code>Taxi extends Vehiculo implements Runnable</code> · main <code>Flota</code></p>
+  <div class="enunciado">3 taxis (que son <code>Vehiculo</code>, clase que no se puede modificar) hacen 5 carreras de 2-15 km a 100 ms/km a la vez. Al final, km de cada taxi y total de la flota.</div>
+  <div class="etiqueta">Esquema</div>
+<pre class="esquema">
+        Vehiculo            «interface» Runnable
+           ▲  extends              ▲  implements
+           └───────── Taxi ────────┘
+   (extends Thread NO: Java no tiene herencia múltiple)
+
+main ─ new Thread(taxi1).start() ─▶ km1 += …  (suyo)
+     ─ new Thread(taxi2).start() ─▶ km2 += …  (suyo)
+     ─ new Thread(taxi3).start() ─▶ km3 += …  (suyo)
+     ─ join() × 3 ─▶ total = km1 + km2 + km3
+</pre>
+  <div class="etiqueta">Salida real (final)</div>
+<pre class="salida">
+9012-GHI carrera 1:  6 km     ← las carreras salen intercaladas
+1234-ABC carrera 1:  6 km
+…
+Taxi 1234-ABC:  34 km
+Taxi 5678-DEF:  55 km
+Taxi 9012-GHI:  32 km
+Total de la flota: 121 km
+</pre>
+  <ol class="resp">
+    <li><b>¿Cómo trabaja cada taxi en su hilo? ¿Por qué no de la otra forma?</b> <code>Taxi extends Vehiculo implements Runnable</code>, y en <code>Flota</code> cada taxi se pasa a un <code>new Thread(taxi)</code>. No puede extender <code>Thread</code> porque ya extiende <code>Vehiculo</code> y Java <b>no permite herencia múltiple</b> de clases; <code>Vehiculo</code> no se puede modificar. Una clase sí puede extender una clase e implementar interfaces a la vez.</li>
+    <li><b>¿Cómo se calcula el total? ¿Problema con un contador compartido?</b> Cada taxi suma solo en <b>su propio</b> <code>kmRecorridos</code>; no comparten nada. El <code>main</code> espera a los tres con <code>join()</code> y <b>después</b> suma. Con un contador único, <code>total += km</code> no es atómico (leer, sumar, escribir): dos taxis podrían pisarse y perder km. Es una <b>condición de carrera</b>, rara aquí por haber pocas sumas, pero posible.</li>
+  </ol>
+</div>
+</section>
+
+<!-- ================================================================ BLOQUE 3 -->
+<section class="bloque b3">
+<h2>Bloque 3 · Compartir información</h2>
+<p class="intro">Se encuentra y se explica el problema. Solo se corrige donde el enunciado lo pide (3.1 y 3.3); el resto se corrige en el bloque 4.</p>
+
+<div class="ej" id="e31">
+  <h3><span class="cod bg3">3.1</span> El informe de ventas <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque3.informe_ventas</code> · <code>Ventas</code>, <code>Cargador</code>, <code>Calculador</code> · main <code>Informe</code></p>
+  <div class="enunciado">Dos hilos a la vez: uno carga 1.000.000 de ventas (1-100 €) y otro calcula el total y la media a partir de ellas. ¿Es correcto el informe?</div>
+  <div class="etiqueta">Esquema</div>
+<pre class="esquema">
+importes[] : [ 37 | 81 | 12 |  0 |  0 |  0 | … ]
+                ▲ escribe          ▲ lee (aún vacío)
+Cargador ───────┘                  │
+Calculador ────────────────────────┘
+
+L(Calc) = {importes}    E(Carg) = {importes}
+L(Calc) ∩ E(Carg) ≠ ∅  → falla Bernstein → NO a la vez
+
+Corrección:  Cargador ████████┐
+                              ▼ join()
+             Calculador       ████  (suma después)
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+== 1) Carga y cálculo A LA VEZ (como dice el enunciado)
+Total facturado: 0 €   Importe medio: 0,00 €
+Total real:      50.530.844 €   → <span class="mal">informe INCORRECTO</span>
+
+== 2) Corregido: el calculador hace join() sobre el cargador
+Total facturado: 50.493.235 €   Importe medio: 50,49 €
+Total real:      50.493.235 €   → <span class="bien">informe CORRECTO</span>
+</pre>
+  <ol class="resp">
+    <li><b>¿Es correcto?</b> <b>No</b>. El calculador suma mientras el cargador aún rellena el array y lee huecos que valen <b>0</b> (aquí terminó antes de que se cargara nada: 0 €). El resultado cambia en cada ejecución: es <b>no determinista</b>.</li>
+    <li><b>Condiciones de Bernstein.</b> Dos tareas pueden ir a la vez solo si L(A)∩E(B)=∅, E(A)∩L(B)=∅ y E(A)∩E(B)=∅. Aquí falla la primera: el calculador <b>lee</b> <code>importes</code> y el cargador <b>escribe</b> en <code>importes</code>. Hay <b>dependencia de datos</b>: el calculador debe ir <b>después</b>.</li>
+    <li><b>Corrección.</b> Con <code>join()</code>: el calculador recibe el hilo del cargador y hace <code>cargador.join()</code> antes de sumar. <code>join()</code> garantiza además que ve todo lo que escribió el cargador (<i>happens-before</i>), así que no hace falta <code>volatile</code> ni <code>synchronized</code>.</li>
+  </ol>
+</div>
+
+<div class="ej" id="e32">
+  <h3><span class="cod bg3">3.2</span> El jardín ornamental <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque3.jardin</code> · <code>ContadorVisitantes</code>, <code>Puerta</code>, <code>PuertaContadorEstatico</code> · main <code>Jardin</code></p>
+  <div class="enunciado">Dos puertas suman en un único contador; 1.000.000 de visitantes por puerta. ¿Es correcto el total?</div>
+  <div class="etiqueta">Esquema · cómo se pierde un visitante</div>
+<pre class="esquema">
+cuenta++  =  ① leer   ② sumar 1   ③ escribir
+
+paso  Puerta Norte    Puerta Sur      cuenta
+ 1    ① lee 41                          41
+ 2                    ① lee 41          41
+ 3    ② calcula 42                      41
+ 4                    ② calcula 42      41
+ 5    ③ escribe 42                      42
+ 6                    ③ escribe 42      42  ✖
+                         entran 2, sube 1
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+== 1) Contador compartido (objeto), 1.000.000 por puerta
+   contador = 1.094.871  (esperado 2.000.000)  <span class="mal">¡se han perdido 905.129!</span>
+   contador = 1.088.593  (esperado 2.000.000)  <span class="mal">¡se han perdido 911.407!</span>
+   contador = 1.997.464  (esperado 2.000.000)  <span class="mal">¡se han perdido 2.536!</span>
+   contador = 2.000.000  (esperado 2.000.000)  OK   (×2)
+== 2) Contador compartido (atributo static)
+   contador = 1.020.165  …  <span class="mal">¡se han perdido 979.835!</span>
+   contador = 1.419.051  …  <span class="mal">¡se han perdido 580.949!</span>
+   contador = 2.000.000  …  OK   (×3)
+== 3) Solo 1.000 visitantes por puerta
+   contador =     2.000  (esperado     2.000)  OK   (×5)
+</pre>
+  <ol class="resp">
+    <li><b>¿Qué resultados? ¿Siempre los mismos?</b> <b>No</b>: casi siempre faltan visitantes, y cada vez un número distinto (de 2.536 a 979.835). A veces sale bien, pero eso solo significa que esa vez los hilos no coincidieron. Las últimas vueltas aciertan más porque el JIT optimiza el bucle y cada puerta acaba antes.</li>
+    <li><b>Paso a paso:</b> ver el esquema. <code>cuenta++</code> son tres pasos y el planificador puede cambiar de hilo entre cualquiera de ellos (o los dos hilos van a la vez en dos núcleos). Es una <b>condición de carrera</b> sobre una <b>sección crítica</b> sin proteger.</li>
+    <li><b>Compartir de otra forma:</b> con un atributo <code>static</code> (<code>PuertaContadorEstatico</code>), uno solo para todas las puertas. <b>El resultado no cambia</b>: el problema no es cómo se comparte el dato, sino que <code>++</code> no es atómico.</li>
+    <li><b>Con 1.000 visitantes</b> sale siempre bien: cada puerta termina antes de que arranque la otra y nunca coinciden. <b>No</b> significa que sea correcto: el fallo sigue ahí, solo que es muy improbable. Por eso los fallos de concurrencia pasan las pruebas pequeñas.</li>
+  </ol>
+</div>
+
+<div class="ej" id="e33">
+  <h3><span class="cod bg3">3.3</span> El vigilante <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque3.vigilante</code> · <code>Vigilante</code>, <code>VigilanteVolatile</code>, <code>VigilanteConTotal</code> · main <code>Vigilancia</code></p>
+  <div class="enunciado">El vigilante hace rondas hasta que el jefe avisa (a los 2 s). Si pasados 3 s más no se ha enterado, el jefe lo informa y el programa termina igualmente.</div>
+  <div class="etiqueta">Esquema · visibilidad</div>
+<pre class="esquema">
+SIN volatile
+ jefe (núcleo 1)            vigilante (núcleo 2)
+ turnoTerminado = true      while (!turnoTerminado)
+        │                        rondas++;
+        ▼                   el JIT lee la variable 1 vez:
+   [ memoria ]  ─ ✖ ─▶      while (true) rondas++; (sin fin)
+
+CON volatile
+ jefe: turnoTerminado = true ──▶ [ memoria ] ──▶ vigilante
+       cada lectura ve la última escritura → se entera
+
+volatile = VISIBILIDAD, no ATOMICIDAD
+ total++ con 4 vigilantes → se pisan igual (ver 3.2)
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+== 1) Aviso SIN volatile
+Jefe: ¡fin de turno!
+Jefe: pasados 3 s el vigilante <span class="mal">NO se ha enterado</span> del aviso.
+== 2) Aviso CON volatile
+Jefe: ¡fin de turno!
+vigilante: <span class="bien">me he enterado del aviso</span>. He hecho 1.551.680.993 rondas.
+== 3) Cuatro vigilantes con un total común volatile
+Suma de las rondas de cada uno: 100.195.158
+Total común (volatile):         32.498.354  → <span class="mal">NO cuadra</span>
+</pre>
+  <ol class="resp">
+    <li><b>¿Se entera siempre?</b> <b>No</b>, casi nunca. El aviso es un <code>boolean</code> normal y la JVM no garantiza que un hilo vea lo que escribe otro sin sincronización (<b>visibilidad</b>). El JIT ve que en el bucle nadie cambia la variable, la lee una vez y lo convierte en <code>while (true)</code>. El vigilante es <b>daemon</b> para que el programa pueda terminar igualmente.</li>
+    <li><b>Corrección:</b> <code>private volatile boolean turnoTerminado;</code> (<code>VigilanteVolatile</code>). Cada lectura ve la última escritura de cualquier hilo y el JIT no puede guardarse el valor: se entera siempre, al instante.</li>
+    <li><b>¿Basta <code>volatile</code> para un total común?</b> <b>No</b>: con 4 vigilantes el total sale muy por debajo de la suma real (32 millones frente a 100 millones). <code>volatile</code> da visibilidad pero no hace atómico <code>total++</code>. Para eso hace falta <code>synchronized</code>, un <code>Lock</code> o un <code>AtomicLong</code>. <code>volatile</code> sirve para una <b>bandera</b>, no para un <b>contador</b>.</li>
+  </ol>
+</div>
+
+<div class="ej" id="e34">
+  <h3><span class="cod bg3">3.4</span> Venta de entradas <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque3.entradas</code> · <code>Sala</code>, <code>Taquilla</code> · main <code>Cine</code></p>
+  <div class="enunciado">100 entradas, 4 taquillas a la vez, 40 clientes por taquilla, y cobrar lleva un instante. Mostrar lo vendido por taquilla, el total y lo que queda.</div>
+  <div class="etiqueta">Esquema · comprobar y después actuar</div>
+<pre class="esquema">
+queda 1 entrada
+T1: if (disponibles > 0) ✔ ─ cobrar() 1 ms ─ disponibles--
+T2: if (disponibles > 0) ✔ ─ cobrar() 1 ms ─ disponibles--
+T3: if (disponibles > 0) ✔ ─ cobrar() 1 ms ─ disponibles--
+T4: if (disponibles > 0) ✔ ─ cobrar() 1 ms ─ disponibles--
+    └── las 4 comprueban ANTES de que nadie descuente ──┘
+resultado: 4 vendidas con 1 libre → disponibles = −3
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+== Sesión 1  Taquillas 27+27+27+27  Total vendido: 108 de 100   Quedan: -2   <span class="mal">¡OVERBOOKING!</span>
+== Sesión 2  Taquillas 33+32+32+32  Total vendido: 129 de 100   Quedan: -1   <span class="mal">¡OVERBOOKING!</span>
+== Sesión 3  Taquillas 31+31+32+32  Total vendido: 126 de 100   Quedan: -2   <span class="mal">¡OVERBOOKING!</span>
+</pre>
+  <ol class="resp">
+    <li><b>¿Se vende el número correcto?</b> <b>No</b>: se venden más de 100 y <code>disponibles</code> acaba en valores imposibles (negativo) o incoherentes con lo vendido.</li>
+    <li><b>Fragmento culpable</b>, en <code>Sala.vender()</code>:
+<pre>if (disponibles > 0) {   // 1) comprobar
+    cobrar();            // 2) tarda 1 ms
+    disponibles--;       // 3) actuar
+}</pre>
+      Primer fallo: <b>comprobar y después actuar</b> no es atómico; varias taquillas ven que queda una y todas la venden. Segundo fallo: <code>disponibles--</code> tampoco es atómico y se pierden restas, como en el jardín.</li>
+    <li><b>Si cobrar fuera instantáneo</b>, el fallo sería <b>mucho menos frecuente</b> (la ventana pasa de 1 ms a nanosegundos), pero <b>no desaparecería</b>: comprobar y descontar siguen siendo pasos separados. Un fallo raro sigue siendo un fallo, y es más difícil de detectar.</li>
+  </ol>
+</div>
+</section>
+
+<!-- ================================================================ BLOQUE 4 -->
+<section class="bloque b4">
+<h2>Bloque 4 · Sincronización</h2>
+<p class="intro">Exclusión mutua, operaciones atómicas y cómo evitar el interbloqueo.</p>
+
+<div class="ej" id="e41">
+  <h3><span class="cod bg4">4.1</span> Arregla el jardín <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque4.jardin</code> · interfaz <code>Contador</code> + <code>ContadorSynchronized</code>, <code>ContadorLock</code>, <code>ContadorAtomico</code> · main <code>JardinCorregido</code></p>
+  <div class="enunciado">Corregir el 3.2 de tres formas, sin reducir visitantes. Con 4 puertas y 1.000.000 por puerta, comparar tiempos.</div>
+  <div class="etiqueta">Esquema · tres formas de hacer indivisible cuenta++</div>
+<pre class="esquema">
+synchronized        ReentrantLock        AtomicInteger
+┌─ cerrojo ─┐       lock();              incrementAndGet()
+│ cuenta++  │       try { cuenta++; }    = CAS en bucle:
+└───────────┘       finally{unlock();}   ¿vale v? → v+1
+ 1 hilo dentro       1 hilo dentro       sin cerrojo
+ los demás esperan   los demás esperan   nadie se bloquea
+
+P1 ─┐                        P1 ─┐
+P2 ─┼─▶ [ sección crítica ]  P2 ─┼─▶ CAS ✔ / reintenta
+P3 ─┤   (de uno en uno)      P3 ─┤
+P4 ─┘                        P4 ─┘
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+synchronized   vueltas: 118 · 88 · 122 ms  → <span class="bien">siempre 4.000.000</span>, mejor 88 ms
+ReentrantLock  vueltas:  97 · 98 ·  93 ms  → <span class="bien">siempre 4.000.000</span>, mejor 93 ms
+AtomicInteger  vueltas:  74 · 96 ·  90 ms  → <span class="bien">siempre 4.000.000</span>, mejor 74 ms
+</pre>
+  <ol class="resp">
+    <li><b>¿Son correctas las tres?</b> <b>Sí</b>, siempre 4.000.000. Las dos primeras por <b>exclusión mutua</b> (un hilo a la vez en la sección crítica) y la tercera con una <b>operación atómica</b> del procesador (CAS).</li>
+    <li><b>¿Cuál es más rápida?</b> En general <b><code>AtomicInteger</code></b> (74 ms): no hay cerrojo, ningún hilo se bloquea y se usa una instrucción del procesador. Con <code>synchronized</code> y <code>ReentrantLock</code> los hilos que no consiguen el cerrojo esperan. Las diferencias son pequeñas y varían entre ejecuciones (el JIT, la caché compartida), por eso se repite y se compara el mejor tiempo.</li>
+    <li><b>¿Hay que proteger la lectura final?</b> <b>No</b>. El <code>main</code> lee después de hacer <code>join()</code> a todas las puertas, y <code>join()</code> garantiza ver todo lo que escribieron (<i>happens-before</i>); ya nadie escribe. Sí haría falta si se leyera <b>mientras</b> las puertas siguen abiertas.</li>
+  </ol>
+</div>
+
+<div class="ej" id="e42">
+  <h3><span class="cod bg4">4.2</span> Taquillas sin overbooking <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque4.entradas</code> · <code>Sala</code> base + <code>SalaSinProteger</code>, <code>SalaSoloDescuento</code>, <code>SalaSincronizada</code>, <code>SalaConReserva</code> · main <code>CineCorregido</code></p>
+  <div class="enunciado">Corregir el 3.4 para que nunca se venda una entrada que no existe, limitando lo menos posible el trabajo simultáneo de las taquillas.</div>
+  <div class="etiqueta">Esquema · qué va dentro del cerrojo</div>
+<pre class="esquema">
+Solo el descuento (P1)  ✖  comprobar fuera del cerrojo
+  if (d > 0) ─ cobrar ─ [ d-- ]
+
+vender() synchronized   ✔  correcto pero en serie
+  [ if (d > 0) ─ cobrar 1 ms ─ d-- ]   ≈ 100 × 1 ms
+
+Reserva + cobro fuera   ✔  correcto y en paralelo
+  [ if (d == 0) no; d-- ] ─ cobrar() fuera
+    instantáneo             las 4 cobran a la vez
+</pre>
+  <div class="etiqueta">Salida real (5 sesiones por versión)</div>
+<pre class="salida">
+Sin proteger (3.4)       118/-3 134/-2 124/-2 106/-3 111/-3 → <span class="mal">OVERBOOKING</span>,  39 ms
+Solo el descuento (P1)   103/-3 103/-3 103/-3 102/-2 103/-3 → <span class="mal">OVERBOOKING</span>,  35 ms
+vender() synchronized    100/0 ×5                           → <span class="bien">correcto</span>,    128 ms
+Reserva + cobro fuera    100/0 ×5                           → <span class="bien">correcto</span>,     32 ms
+</pre>
+  <ol class="resp">
+    <li><b>¿Funciona proteger solo el descuento?</b> <b>No</b>: siguen saliendo 102-103 vendidas y −3. Ya no se pierden restas, pero la <b>comprobación</b> sigue fuera: las cuatro ven «queda 1» y las cuatro descuentan, ordenadamente, hasta −3. La sección crítica es <b>comprobar + descontar juntos</b>.</li>
+    <li><b>Diferencia de tiempo.</b> Sin corregir, unos 39 ms; con <code>vender()</code> <code>synchronized</code>, unos 128 ms (más del triple). Mientras una taquilla cobra (1 ms) tiene el cerrojo y las otras esperan: las 100 ventas van <b>de una en una</b>, unos 100 ms. Es el precio de la exclusión mutua.</li>
+    <li><b>Ampliación.</b> <code>SalaConReserva</code> comprueba y <b>reserva</b> (descuenta) en un <code>synchronized</code> mínimo e instantáneo, y <b>cobra fuera</b>. Nunca vende de más y las cuatro cobran a la vez: <b>32 ms</b>, tan rápido como sin proteger. Si el cobro fallara, se devolvería la entrada con otro <code>synchronized { disponibles++; }</code>.</li>
+  </ol>
+<pre>public boolean vender() {
+    synchronized (this) {               // sección crítica MÍNIMA
+        if (disponibles == 0) return false;
+        disponibles--;                  // reservada: ya nadie más puede cogerla
+    }
+    cobrar();                           // fuera del cerrojo
+    return true;
+}</pre>
+  <div class="nota"><b>Regla:</b> la sección crítica debe ser lo más pequeña posible, pero contener entera la operación que tiene que ser indivisible. Nada de esperas (cobros, E/S, <code>sleep</code>) con el cerrojo cogido si se puede evitar.</div>
+</div>
+
+<div class="ej" id="e43">
+  <h3><span class="cod bg4">4.3</span> La máquina de turnos <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque4.turnos</code> · <code>MaquinaTurnos</code> (modos SIN_PROTECCION, SYNCHRONIZED, CAS) · <code>Cliente</code> · main <code>Carniceria</code></p>
+  <div class="enunciado">4 clientes sacan 100.000 números cada uno a la vez. Ningún número puede repetirse, y la salida debe demostrarlo.</div>
+  <div class="etiqueta">Esquema · compareAndSet en bucle</div>
+<pre class="esquema">
+         ┌─────────────────────────────┐
+         ▼                             │ false: otro se coló
+  actual = siguiente.get()             │
+         │                             │
+  compareAndSet(actual, actual + 1) ───┘
+         │ true: nadie se coló
+         ▼
+  return actual   ← este número es MÍO
+
+Demostración: boolean[] visto (400.001 casillas)
+  número n → si visto[n] ya era true → REPETIDO
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+SIN_PROTECCION  mayor 127.375, repetidos 272.625  → <span class="mal">¡HAY REPETIDOS!</span>
+SIN_PROTECCION  mayor 264.955, repetidos 135.045  → <span class="mal">¡HAY REPETIDOS!</span>
+SIN_PROTECCION  mayor 400.000, repetidos       0  → ninguno  ← suerte
+SYNCHRONIZED    mayor 400.000, repetidos       0  → <span class="bien">ningún número repetido</span> (×3)
+CAS             mayor 400.000, repetidos       0  → <span class="bien">ningún número repetido</span> (×3)
+</pre>
+  <ol class="resp">
+    <li><b>¿Cuántos repetidos sin protección?</b> Muchísimos y cada vez distintos (272.625 y 135.045, y alguna vez ninguno, por suerte). Cada repetido es un <code>siguiente++</code> en el que dos clientes leyeron el mismo valor; por eso el mayor número queda muy por debajo de 400.000. Se comprueba marcando cada número en un <code>boolean[]</code>.</li>
+    <li><b>¿Necesitan protección los números de cada cliente?</b> <b>No</b>: cada <code>Cliente</code> tiene su propio <code>int[]</code> y solo él escribe en él; no es un dato compartido. El <code>main</code> lo lee tras <code>join()</code>. Solo se protege lo compartido: el contador de la máquina.</li>
+    <li><b>Ampliación sin <code>synchronized</code> ni métodos que incrementen:</b> <code>AtomicInteger.compareAndSet(actual, actual + 1)</code> en bucle (esquema). Cambia el valor solo si sigue valiendo <code>actual</code>, en una sola operación atómica; si otro se coló, devuelve <code>false</code> y se reintenta. Es <b>lock-free</b>: nadie espera bloqueado.</li>
+  </ol>
+</div>
+
+<div class="ej" id="e44">
+  <h3><span class="cod bg4">4.4</span> El banco <a class="volver" href="#indice">↑ índice</a></h3>
+  <p class="meta">Paquete <code>bloque4.banco</code> · <code>Cuenta</code>, <code>Cajero</code>, <code>Banco</code> (modos SIN_PROTECCION, UN_CERROJO, POR_CUENTA) · main <code>Transferencias</code></p>
+  <div class="enunciado">10 cuentas con 1.000 €, 4 cajeros con 200.000 transferencias de 1-100 € al azar, solo si hay saldo. El total final debe ser el inicial. Ampliación: transferencias entre cuentas distintas a la vez.</div>
+  <div class="etiqueta">Esquema · el interbloqueo y cómo se evita</div>
+<pre class="esquema">
+INTERBLOQUEO (cada cajero coge primero su ORIGEN)
+ Cajero A: 3 → 7          Cajero B: 7 → 3
+ ┌──────────────┐  espera  ┌──────────────┐
+ │ tiene cta 3  │ ───────▶ │ tiene cta 7  │
+ └──────────────┘ ◀─────── └──────────────┘
+           esperan para siempre: espera circular
+
+SOLUCIÓN: siempre primero la cuenta de MENOR id
+ Cajero A: 3 → 7   coge 3, luego 7
+ Cajero B: 7 → 3   coge 3 (¡no la 7!), luego 7
+           ▲ B espera a A en la 3: no hay ciclo
+</pre>
+  <div class="etiqueta">Salida real</div>
+<pre class="salida">
+SIN_PROTECCION  inicial 10.000 €  final  83.794 €  → <span class="mal">¡NO CUADRA!</span>  (54 ms)
+SIN_PROTECCION  inicial 10.000 €  final  88.848 €  → <span class="mal">¡NO CUADRA!</span>  (38 ms)
+SIN_PROTECCION  inicial 10.000 €  final 104.766 €  → <span class="mal">¡NO CUADRA!</span>  (17 ms)
+UN_CERROJO      inicial 10.000 €  final  10.000 €  → <span class="bien">cuadra</span>  (63 · 56 · 44 ms)
+POR_CUENTA      inicial 10.000 €  final  10.000 €  → <span class="bien">cuadra</span>  (63 · 63 · 65 ms)
+</pre>
+  <ol class="resp">
+    <li><b>¿Por qué cambia el total si solo se mueve dinero?</b> <code>de.saldo -= c</code> y <code>a.saldo += c</code> son cada una leer, operar y escribir; si dos cajeros tocan la misma cuenta, una escritura pisa a la otra. Si se pierde una <b>resta</b>, aparece dinero (aquí hasta +94.766 €); si se pierde una <b>suma</b>, desaparece. Además, <code>if (de.saldo >= c)</code> es comprobar-y-actuar. La transferencia tiene que ser <b>atómica</b>: entera o nada.</li>
+    <li><b>Ampliación: riesgo y solución.</b> Con un cerrojo <b>por cuenta</b> cada transferencia coge <b>dos</b> cerrojos, y aparece el <b>interbloqueo</b> (esquema): A tiene la 3 y espera la 7, B tiene la 7 y espera la 3, para siempre. Se evita cogiendo los cerrojos <b>siempre en el mismo orden</b> (primero el menor <code>id</code>), lo que rompe la condición de <b>espera circular</b> de Coffman. Otra opción: <code>tryLock()</code> con tiempo límite.
+<pre>Cuenta primera = de.id < a.id ? de : a;
+Cuenta segunda = de.id < a.id ? a : de;
+synchronized (primera) {
+    synchronized (segunda) { /* comprobar saldo y mover */ }
+}</pre>
+      <b>Tiempos:</b> aquí no sale más rápido (≈ 64 ms frente a ≈ 54 ms). Con solo 10 cuentas, dos transferencias al azar coinciden muy a menudo en una cuenta, y la sección crítica es tan corta que coger dos cerrojos cuesta más de lo que se gana. Compensaría con muchas cuentas o con transferencias lentas (disco, red).</li>
+  </ol>
+</div>
+</section>
+
+<!-- ================================================================ RESUMEN -->
+<section class="bloque" id="resumen" style="color:var(--tinta)">
+<h2 style="border-color:var(--acento)">Resumen de herramientas <a class="volver" href="#indice" style="font-size:9pt;font-weight:400;float:right">↑ índice</a></h2>
+<table>
+  <tr><th>Necesito…</th><th>Herramienta</th><th>Ejercicio</th></tr>
+  <tr><td>Crear un hilo</td><td><code>extends Thread</code> o <code>implements Runnable</code> + <code>new Thread(r)</code> (Runnable si la clase ya hereda)</td><td>1.1, 1.2, 2.4</td></tr>
+  <tr><td>Arrancarlo</td><td><code>start()</code>, nunca <code>run()</code></td><td>todos</td></tr>
+  <tr><td>Esperar a que termine</td><td><code>join()</code>; con límite, <code>join(ms)</code> + <code>isAlive()</code></td><td>1.2, 2.2</td></tr>
+  <tr><td>Pedirle que pare</td><td><code>interrupt()</code> → <code>InterruptedException</code> o <code>isInterrupted()</code></td><td>2.2, 2.3</td></tr>
+  <tr><td>Que no impida terminar</td><td><code>setDaemon(true)</code> antes de <code>start()</code></td><td>2.3, 3.3</td></tr>
+  <tr><td>Que una tarea vaya después de otra</td><td><code>join()</code> (condiciones de Bernstein)</td><td>3.1</td></tr>
+  <tr><td>Ver la bandera de otro hilo</td><td><code>volatile</code> (visibilidad, no atomicidad)</td><td>3.3</td></tr>
+  <tr><td>Operación compuesta indivisible</td><td><code>synchronized</code> / <code>ReentrantLock</code></td><td>4.1, 4.2, 4.4</td></tr>
+  <tr><td>Contador compartido</td><td><code>AtomicInteger</code> / <code>AtomicLong</code> (CAS)</td><td>4.1, 4.3</td></tr>
+  <tr><td>Dos cerrojos sin interbloqueo</td><td>cogerlos siempre en el mismo orden</td><td>4.4</td></tr>
+</table>
+<pre class="esquema">
+            ¿comparten datos los hilos?
+              │                │
+             no               sí
+              │                │
+        sin protección   ¿solo un hilo escribe una bandera?
+        (join al final)       │               │
+                             sí              no
+                              │               │
+                          volatile   ¿es un contador simple?
+                                          │          │
+                                         sí         no
+                                          │          │
+                                    AtomicInteger  synchronized
+                                                   / Lock
+</pre>
+<p class="meta" style="margin-top:14px">José Antonio Pastor Rivera · PSP · 2º DAM · IES Isidra de Guzmán · 19/11/2026</p>
+</section>
+
+</body>
+</html>

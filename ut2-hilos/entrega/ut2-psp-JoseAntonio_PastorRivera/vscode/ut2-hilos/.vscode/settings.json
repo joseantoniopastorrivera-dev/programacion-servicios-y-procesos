@@ -1,0 +1,13 @@
+{
+    // Proyecto Java "sin build tools": las fuentes en src/ y las clases compiladas en out/
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "out",
+    "java.project.referencedLibraries": [],
+
+    // Los ficheros llevan tildes: UTF-8 en el editor y en la terminal integrada
+    "files.encoding": "utf8",
+    "java.jdt.ls.vmargs": "-Dfile.encoding=UTF-8",
+
+    // No mostrar las clases compiladas en el explorador
+    "files.exclude": { "out": true, "**/*.class": true }
+}

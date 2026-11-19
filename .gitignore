@@ -4,3 +4,6 @@ out/
 
 # Guías de defensa: material personal, nunca se suben a GitHub
 guia-defensa-*.md
+
+# Zip de entrega generado (se rehace desde ut2-hilos/entrega/ut2-psp-JoseAntonio_PastorRivera/)
+ut2-hilos/entrega/*.zip
