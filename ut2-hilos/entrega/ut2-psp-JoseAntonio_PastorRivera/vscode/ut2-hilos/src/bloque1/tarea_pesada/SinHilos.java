@@ -1,4 +1,13 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque1.tarea_pesada;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 1.2 – Tarea pesada sin bloquear
  *
  * Versión sin hilos.
@@ -6,12 +15,15 @@
  * Con un solo hilo (main) es IMPOSIBLE hacer las dos cosas a la vez: mientras el main está dentro de
  * contar(), no puede ejecutar ningún println. El mensaje solo puede salir antes o después del cálculo.
  */
-package bloque1.tarea_pesada;
-
 public class SinHilos {
 
     static final int LIMITE = 8_000_000;          // el _ separa miles: es 8000000 (desde Java 7)
 
+    /**
+     * Cuenta los primos en el propio main: mientras calcula, no puede atender al usuario.
+     *
+     * @param args no se usan
+     */
     public static void main(String[] args) {
         long inicio = System.currentTimeMillis();
         System.out.println("Sigo atendiendo al usuario...");     // sale una vez…

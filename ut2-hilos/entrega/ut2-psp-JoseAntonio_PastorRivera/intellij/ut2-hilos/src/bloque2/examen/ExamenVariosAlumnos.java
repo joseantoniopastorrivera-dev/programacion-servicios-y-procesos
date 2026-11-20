@@ -1,4 +1,13 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque2.examen;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 2.2 – El examen (ampliación)
  *
  * Cinco alumnos hacen el examen a la vez, con los mismos 5 segundos para todos.
@@ -6,12 +15,16 @@
  * SOLUCIÓN. La clave es una HORA LÍMITE común. Si se hiciera join(5000) a cada alumno, uno detrás de otro,
  * el último podría tener hasta 5 × 5 = 25 s. Por eso a cada join se le da solo el tiempo que QUEDA.
  */
-package bloque2.examen;
-
 public class ExamenVariosAlumnos {
 
     static final long TIEMPO_MS = 5000;
 
+    /**
+     * Cinco alumnos hacen el examen a la vez con una hora límite común de 5 s.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera
+     */
     public static void main(String[] args) throws InterruptedException {
         String[] nombres = {"Ana", "Luis", "Marta", "Pablo", "Sara"};
         Alumno[] alumnos = new Alumno[nombres.length];

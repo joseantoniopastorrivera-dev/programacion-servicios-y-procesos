@@ -1,4 +1,15 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque4.jardin;
+
+import java.util.function.Supplier;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 4.1 – Arregla el jardín
  *
  * Copia en este paquete tu solución del ejercicio 3.2 y corrígela de tres formas distintas.
@@ -7,16 +18,18 @@
  * midiendo el tiempo. La primera vuelta de cada una suele ser más lenta (la JVM aún está compilando el código
  * con el JIT): por eso se repite y se compara el mejor tiempo.
  */
-package bloque4.jardin;
-
-import java.util.function.Supplier;
-
 public class JardinCorregido {
 
     static final int PUERTAS = 4;
     static final int POR_PUERTA = 1_000_000;
     static final int REPETICIONES = 3;
 
+    /**
+     * Prueba las tres correcciones con 4 puertas y 1.000.000 de visitantes por puerta, y compara tiempos.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera a las puertas
+     */
     public static void main(String[] args) throws InterruptedException {
         probar("synchronized ", ContadorSynchronized::new);
         probar("ReentrantLock", ContadorLock::new);
@@ -24,7 +37,7 @@ public class JardinCorregido {
     }
 
     /**
-     * Supplier<Contador>: "algo que sabe crear un Contador". ContadorSynchronized::new es una referencia al
+     * {@code Supplier<Contador>}: "algo que sabe crear un Contador". ContadorSynchronized::new es una referencia al
      * constructor; así cada repetición empieza con un contador nuevo (a 0).
      */
     private static void probar(String nombre, Supplier<Contador> fabrica) throws InterruptedException {

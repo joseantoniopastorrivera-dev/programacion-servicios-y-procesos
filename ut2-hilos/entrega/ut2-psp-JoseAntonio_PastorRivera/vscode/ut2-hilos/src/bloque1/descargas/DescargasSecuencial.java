@@ -1,12 +1,24 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque1.descargas;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 1.1 – Descargas
  *
  * Versión que descarga los ficheros uno detrás de otro.
  */
-package bloque1.descargas;
-
 public class DescargasSecuencial {
 
+    /**
+     * Descarga los cinco ficheros uno detrás de otro, todos en el hilo main.
+     *
+     * @param args no se usan
+     */
     public static void main(String[] args) {
         // Los cinco ficheros del enunciado, en el orden en que aparecen.
         Descarga[] descargas = {

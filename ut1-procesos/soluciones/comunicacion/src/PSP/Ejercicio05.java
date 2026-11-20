@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -7,17 +14,24 @@ import java.io.InputStreamReader;
 
 /**
  * Ejercicio 5. Buscador con grep: palabra y fichero por args (p. ej. gato datos/texto.txt).
- *   Linux   : grep -n <palabra> <fichero>    códigos: 0 encontrado · 1 no encontrado · 2 error
- *   Windows : findstr /n <palabra> <fichero> códigos: 0 encontrado · 1 no encontrado O error
+ *   Linux   : {@code grep -n <palabra> <fichero>}    códigos: 0 encontrado · 1 no encontrado · 2 error
+ *   Windows : {@code findstr /n <palabra> <fichero>} códigos: 0 encontrado · 1 no encontrado O error
  *             (findstr no distingue «no está» de «fichero inexistente» por el código: se mira stderr)
  * Las dos herramientas sacan «número:línea», así que el resto del programa es igual.
  */
 public class Ejercicio05 {
 
+    /**
+     * Busca una palabra en un fichero con grep (findstr en Windows) e interpreta su código de salida.
+     *
+     * @param args la palabra y el fichero
+     * @throws IOException          si no se puede lanzar el proceso o leer su salida
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length < 2) {
-            System.out.println("Uso: java -cp bin PSP.Ejercicio05 <palabra> <fichero>");
-            return;
+            System.err.println("Uso: java -cp bin PSP.Ejercicio05 <palabra> <fichero>");   // errores por stderr
+            System.exit(1);                                                                 // y código distinto de 0
         }
         String palabra = args[0];
         String fichero = args[1];

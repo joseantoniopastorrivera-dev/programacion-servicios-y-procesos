@@ -1,4 +1,15 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque2.taxis;
+
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 2.4 – Taxis
  *
  * Un taxi de la flota: hace 5 carreras de 2 a 15 km (100 ms por km).
@@ -7,15 +18,16 @@
  * Thread. Por eso implementa la interfaz Runnable (una clase puede extender una clase E implementar
  * interfaces a la vez).
  */
-package bloque2.taxis;
-
-import java.util.concurrent.ThreadLocalRandom;
-
 public class Taxi extends Vehiculo implements Runnable {
 
     static final int CARRERAS = 5;
     static final int MS_POR_KM = 100;
 
+    /**
+     * Crea un taxi sin km recorridos.
+     *
+     * @param matricula matrícula del taxi
+     */
     public Taxi(String matricula) {
         super(matricula);
     }
@@ -34,6 +46,9 @@ public class Taxi extends Vehiculo implements Runnable {
         }
     }
 
+    /**
+     * Trabajo del hilo: hacer las carreras del día.
+     */
     @Override
     public void run() {
         trabajar();

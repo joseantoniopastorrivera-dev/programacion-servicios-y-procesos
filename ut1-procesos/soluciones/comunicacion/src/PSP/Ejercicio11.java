@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -7,12 +14,19 @@ import java.io.IOException;
 
 /**
  * Ejercicio 11. Ordenar notas con sort SIN leer ni escribir los datos desde Java (redirecciones).
- *   Linux   : sort -t, -k2 -rn          (terminal: sort -t, -k2 -rn < datos/notas.csv > datos/notas_ordenadas.csv)
+ *   Linux   : sort -t, -k2 -rn          (terminal: {@code sort -t, -k2 -rn < datos/notas.csv > datos/notas_ordenadas.csv})
  *   Windows : el sort de Windows no ordena por campos → el de Git: C:/Program Files/Git/usr/bin/sort.exe
- * Reflexión: sin la «n» se ordena como TEXTO: "10" < "5.1" porque compara carácter a carácter ('1' < '5').
+ * Reflexión: sin la «n» se ordena como TEXTO: {@code "10" < "5.1"} porque compara carácter a carácter ({@code '1' < '5'}).
  */
 public class Ejercicio11 {
 
+    /**
+     * Ordena el fichero de notas con sort usando solo redirecciones: Java no lee ni escribe los datos.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el proceso
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         File entrada = new File("datos/notas.csv");
         File salida = new File("datos/notas_ordenadas.csv");

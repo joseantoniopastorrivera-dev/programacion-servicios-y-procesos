@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -11,6 +18,13 @@ import java.io.InputStreamReader;
  */
 public class Ejercicio04 {
 
+    /**
+     * Lista los ficheros de una carpeta ordenados por tamaño y muestra los 5 más grandes.
+     *
+     * @param args opcional: la carpeta (por defecto, la de los comandos del sistema)
+     * @throws IOException          si no se puede lanzar el proceso o leer su salida
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         String carpeta = args.length > 0 ? args[0] : (SO.WINDOWS ? "C:\\Windows\\System32" : "/usr/bin");
         String[] comando = SO.comando(

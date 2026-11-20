@@ -1,12 +1,25 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque3.entradas;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 3.4 – Venta de entradas
  *
  * Cuatro taquillas venden a la vez.
  */
-package bloque3.entradas;
-
 public class Cine {
 
+    /**
+     * Tres sesiones de venta con cuatro taquillas a la vez, sin proteger la sala, para ver el overbooking.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera a las taquillas
+     */
     public static void main(String[] args) throws InterruptedException {
         for (int prueba = 1; prueba <= 3; prueba++) {       // varias ejecuciones: con hilos, una no demuestra nada
             System.out.println("== Sesión " + prueba);

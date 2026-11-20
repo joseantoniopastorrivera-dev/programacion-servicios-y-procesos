@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -14,10 +21,17 @@ import java.io.IOException;
  */
 public class RunAndWait {
 
+    /**
+     * Lanza Sumador con los números recibidos, guarda su salida en un fichero, espera y muestra el resultado.
+     *
+     * @param args el fichero de resultado y uno o más números
+     * @throws IOException          si no se puede lanzar el proceso o leer el fichero
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length < 2) {
-            System.out.println("Uso: java -cp bin PSP.RunAndWait <fichero.txt> <número> [número...]");
-            return;
+            System.err.println("Uso: java -cp bin PSP.RunAndWait <fichero.txt> <número> [número...]");
+            System.exit(1);
         }
         File salida = new File(args[0]);
         String[] comando = new String[4 + args.length - 1];      // java -cp bin PSP.Sumador + los números
@@ -37,6 +51,13 @@ public class RunAndWait {
         System.out.println("Resultado (leído de " + salida.getName() + "): " + leerPrimeraLinea(salida));
     }
 
+    /**
+     * Lee la primera línea de un fichero.
+     *
+     * @param f fichero que leer
+     * @return su primera línea, o null si está vacío
+     * @throws IOException si no se puede leer
+     */
     static String leerPrimeraLinea(File f) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(f));
         String linea = br.readLine();

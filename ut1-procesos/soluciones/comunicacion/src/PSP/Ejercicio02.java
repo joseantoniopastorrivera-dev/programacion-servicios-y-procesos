@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -10,6 +17,13 @@ import java.io.InputStreamReader;
  */
 public class Ejercicio02 {
 
+    /**
+     * Lanza whoami y hostname, lee la respuesta de cada uno y muestra quién y dónde ejecuta el programa.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar un proceso o leer su salida
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         String usuario = ejecutar("whoami");
         String equipo = ejecutar("hostname");

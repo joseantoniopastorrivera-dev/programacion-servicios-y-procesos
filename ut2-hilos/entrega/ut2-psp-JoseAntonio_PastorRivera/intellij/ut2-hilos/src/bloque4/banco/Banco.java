@@ -1,4 +1,13 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque4.banco;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 4.4 – El banco
  *
  * 10 cuentas con 1.000 € cada una.
@@ -8,8 +17,6 @@
  *   UN_CERROJO     → primera corrección: un único cerrojo (el banco) para TODAS las transferencias.
  *   POR_CUENTA     → ampliación: un cerrojo por cuenta; transferencias entre cuentas distintas van a la vez.
  */
-package bloque4.banco;
-
 public class Banco {
 
     public enum Modo { SIN_PROTECCION, UN_CERROJO, POR_CUENTA }
@@ -17,6 +24,13 @@ public class Banco {
     private final Cuenta[] cuentas;
     private final Modo modo;
 
+    /**
+     * Crea el banco con todas sus cuentas.
+     *
+     * @param numCuentas   número de cuentas
+     * @param saldoInicial saldo con el que empieza cada cuenta
+     * @param modo         forma de proteger las transferencias
+     */
     public Banco(int numCuentas, int saldoInicial, Modo modo) {
         cuentas = new Cuenta[numCuentas];
         for (int i = 0; i < numCuentas; i++) {
@@ -25,6 +39,11 @@ public class Banco {
         this.modo = modo;
     }
 
+    /**
+     * Número de cuentas del banco.
+     *
+     * @return cuántas cuentas hay
+     */
     public int getNumCuentas() {
         return cuentas.length;
     }

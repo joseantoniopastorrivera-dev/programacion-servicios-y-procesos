@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.File;
@@ -12,6 +19,13 @@ import java.io.IOException;
  */
 public class Ejercicio6 {
 
+    /**
+     * Crea fichero.txt dentro de «pruebas» cambiando el directorio de trabajo del hijo con directory().
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el proceso
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         File carpeta = new File("pruebas");                      // la del ejercicio 4
         if (!carpeta.isDirectory()) {

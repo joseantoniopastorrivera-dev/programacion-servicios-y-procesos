@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -11,6 +18,12 @@ import java.io.InputStreamReader;
  */
 public class Ejercicio06 {
 
+    /**
+     * Ejecuta varios comandos y dice de cada uno si fue bien, falló (con su código) o no existe.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws InterruptedException {
         String[][] linux = {{"date"}, {"ls", "carpetaQueNoExiste"}, {"comandoInventado"},
                 {"cat", "ficheroQueNoExiste.txt"}, {"whoami"}};

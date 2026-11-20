@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -9,7 +16,7 @@ import java.util.List;
 
 /**
  * Ejercicio 13. Tubería de procesos con ProcessBuilder.startPipeline().
- *   tr -cs 'A-Za-z' '\n' < datos/texto.txt | sort -u | wc -l
+ *   {@code tr -cs 'A-Za-z' '\n' < datos/texto.txt | sort -u | wc -l}
  *   Linux   : tr, sort, wc, uniq y head del sistema
  *   Windows : los de Git para Windows (C:/Program Files/Git/usr/bin/...)
  * Reflexión: sale 11 y no 9 porque sort -u distingue mayúsculas: «El»/«el» y «Un»/«un» cuentan doble.
@@ -17,6 +24,13 @@ import java.util.List;
  */
 public class Ejercicio13 {
 
+    /**
+     * Monta una tubería de varios procesos con startPipeline() y muestra el resultado del último.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar la tubería o leer su salida
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         File texto = new File("datos/texto.txt");
 
@@ -53,6 +67,13 @@ public class Ejercicio13 {
         return SO.WINDOWS ? SO.git(herramienta) : herramienta;
     }
 
+    /**
+     * Lee toda la salida estándar de un proceso.
+     *
+     * @param p proceso del que leer
+     * @return el texto completo de su salida
+     * @throws IOException si falla la lectura
+     */
     private static String leerTodo(Process p) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
         StringBuilder sb = new StringBuilder();
@@ -64,6 +85,12 @@ public class Ejercicio13 {
         return sb.toString();
     }
 
+    /**
+     * Espera a que terminen todos los procesos de la tubería.
+     *
+     * @param procesos procesos a esperar
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     private static void esperarTodos(List<Process> procesos) throws InterruptedException {
         for (Process p : procesos) {
             p.waitFor();

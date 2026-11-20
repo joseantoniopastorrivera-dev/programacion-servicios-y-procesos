@@ -1,12 +1,25 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque2.taxis;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 2.4 – Taxis
  *
  * Los 3 taxis trabajan a la vez.
  */
-package bloque2.taxis;
-
 public class Flota {
 
+    /**
+     * Pone a trabajar los tres taxis a la vez, espera a todos y muestra los km de cada uno y el total.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera a los taxis
+     */
     public static void main(String[] args) throws InterruptedException {
         Taxi[] taxis = {new Taxi("1234-ABC"), new Taxi("5678-DEF"), new Taxi("9012-GHI")};
         Thread[] hilos = new Thread[taxis.length];

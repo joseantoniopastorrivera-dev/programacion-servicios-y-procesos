@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.IOException;
@@ -11,6 +18,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class Ejercicio9 {
 
+    /**
+     * Lanza sleep 10, lo espera como máximo 3 s con waitFor(tiempo) y, si no ha terminado, lo destruye.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el proceso
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         Process p = new ProcessBuilder(SO.dormir(10)).start();
         // waitFor(tiempo, unidad) NO espera para siempre: devuelve true si terminó, false si se agotó el tiempo.

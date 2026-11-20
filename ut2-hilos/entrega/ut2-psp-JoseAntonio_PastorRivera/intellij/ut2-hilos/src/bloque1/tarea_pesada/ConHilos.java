@@ -1,16 +1,29 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque1.tarea_pesada;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 1.2 – Tarea pesada sin bloquear
  *
  * Versión con hilos.
  *
  * El cálculo va a un hilo nuevo; el main se queda libre para "atender al usuario" cada medio segundo.
  */
-package bloque1.tarea_pesada;
-
 public class ConHilos {
 
     static final int LIMITE = 8_000_000;
 
+    /**
+     * Solución A: cuenta los primos en otro hilo (Runnable) mientras el main sigue respondiendo cada medio segundo.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera al cálculo
+     */
     public static void main(String[] args) throws InterruptedException {
         long inicio = System.currentTimeMillis();
 

@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 /**
@@ -16,6 +23,9 @@ public final class SO {
     /** Carpeta con las herramientas de Linux que instala Git para Windows (tr, sort, wc...). */
     public static final String GIT_BIN = "C:\\Program Files\\Git\\usr\\bin\\";
 
+    /**
+     * Constructor privado: es una clase de utilidades y no se crean objetos de ella.
+     */
     private SO() {
         // clase de utilidades: no se crean objetos
     }

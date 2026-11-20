@@ -1,4 +1,15 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque2.examen;
+
+import java.util.concurrent.ThreadLocalRandom;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 2.2 – El examen
  *
  * Un alumno que contesta un examen de 20 preguntas (200–600 ms cada una).
@@ -7,10 +18,6 @@
  * como el alumno pasa casi todo el tiempo dentro de Thread.sleep(), la interrupción le despierta al
  * momento con una InterruptedException, y ahí deja de escribir.
  */
-package bloque2.examen;
-
-import java.util.concurrent.ThreadLocalRandom;
-
 public class Alumno implements Runnable {
 
     static final int PREGUNTAS = 20;
@@ -19,6 +26,11 @@ public class Alumno implements Runnable {
     private int contestadas = 0;
     private boolean aTiempo = false;
 
+    /**
+     * Crea un alumno que todavía no ha contestado ninguna pregunta.
+     *
+     * @param nombre nombre del alumno (también será el del hilo)
+     */
     public Alumno(String nombre) {
         this.nombre = nombre;
     }
@@ -40,6 +52,9 @@ public class Alumno implements Runnable {
         }
     }
 
+    /**
+     * Trabajo del hilo: hacer el examen.
+     */
     @Override
     public void run() {
         hacerExamen();

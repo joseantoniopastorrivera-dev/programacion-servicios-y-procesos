@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -13,6 +20,13 @@ import java.lang.ProcessBuilder.Redirect;
  */
 public class Ejercicio12 {
 
+    /**
+     * Añade al diario de actividad la salida de un comando con Redirect.appendTo, sin borrar lo anterior.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el proceso
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         File diario = new File("diario.log");
         String[] fecha = SO.comando(

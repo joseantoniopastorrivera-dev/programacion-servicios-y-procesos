@@ -1,4 +1,15 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque4.turnos;
+
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 4.3 – La máquina de turnos
  *
  * La máquina de turnos de la carnicería: ningún número puede repetirse.
@@ -8,10 +19,6 @@
  *   SYNCHRONIZED   → la solución básica
  *   CAS            → la ampliación: sin synchronized y sin incrementAndGet/getAndIncrement
  */
-package bloque4.turnos;
-
-import java.util.concurrent.atomic.AtomicInteger;
-
 public class MaquinaTurnos {
 
     public enum Modo { SIN_PROTECCION, SYNCHRONIZED, CAS }
@@ -20,10 +27,20 @@ public class MaquinaTurnos {
     private int siguiente = 1;                                   // para SIN_PROTECCION y SYNCHRONIZED
     private final AtomicInteger siguienteAtomico = new AtomicInteger(1);   // para CAS
 
+    /**
+     * Crea la máquina, que empieza a dar números desde el 1.
+     *
+     * @param modo forma de proteger el contador
+     */
     public MaquinaTurnos(Modo modo) {
         this.modo = modo;
     }
 
+    /**
+     * Da el siguiente número, protegido según el modo (sin protección, synchronized o CAS a mano).
+     *
+     * @return el número de turno asignado
+     */
     public int nuevoTurno() {
         switch (modo) {
             case SIN_PROTECCION:

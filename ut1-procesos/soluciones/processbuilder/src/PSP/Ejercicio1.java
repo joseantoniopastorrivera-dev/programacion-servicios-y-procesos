@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.IOException;
@@ -16,6 +23,11 @@ public class Ejercicio1 {
     static final String[] CALCULADORAS_LINUX = {"gnome-calculator", "kcalc", "galculator", "xcalc"};
     static final String[] EDITORES_LINUX = {"gnome-text-editor", "gedit", "kate", "mousepad", "xed"};
 
+    /**
+     * Abre la calculadora y después un editor de texto, cada uno en su propio proceso.
+     *
+     * @param args no se usan
+     */
     public static void main(String[] args) {
         abrir("Calculadora", CALCULADORAS_LINUX, "calc.exe");
         abrir("Editor de texto", EDITORES_LINUX, "notepad.exe");

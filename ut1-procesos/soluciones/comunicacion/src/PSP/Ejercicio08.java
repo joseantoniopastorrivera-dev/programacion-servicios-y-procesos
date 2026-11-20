@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -15,6 +22,13 @@ import java.util.Scanner;
  */
 public class Ejercicio08 {
 
+    /**
+     * Cifra un texto con tr (ROT13) y vuelve a cifrar el resultado para comprobar que se recupera el original.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el proceso o comunicarse con él
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
         System.out.print("Texto: ");

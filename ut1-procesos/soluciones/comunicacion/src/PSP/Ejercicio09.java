@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -14,6 +21,13 @@ import java.util.Scanner;
  */
 public class Ejercicio09 {
 
+    /**
+     * Conversa con HijoInverso: le envía varias líneas, una a una, y lee cada respuesta invertida.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el hijo o comunicarse con él
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         Process hijo = new ProcessBuilder("java", "-cp", "bin", "PSP.HijoInverso").start();
         PrintWriter haciaHijo = new PrintWriter(hijo.getOutputStream());

@@ -1,4 +1,13 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque2.estados;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 2.1 – Estados de un hilo
  *
  * SOLUCIÓN. El hilo que observa el main. Su run() está diseñado para pasar por cada estado:
@@ -8,8 +17,6 @@
  *   WAITING        → cerrojo.wait(): espera SIN tiempo límite, hasta que otro hilo haga notify()
  *   TERMINATED     → cuando run() termina (lo pone la JVM)
  */
-package bloque2.estados;
-
 public class HiloObservado extends Thread {        // aquí se usa la otra forma: extender Thread
 
     /** Objeto que usan los dos hilos para wait()/notify(). Cualquier objeto vale como cerrojo. */
@@ -18,11 +25,19 @@ public class HiloObservado extends Thread {        // aquí se usa la otra forma
     /** Para que el resultado del cálculo "se use" y el compilador JIT no elimine el bucle. */
     private long basura;
 
+    /**
+     * Crea el hilo observado, llamado "observado".
+     *
+     * @param cerrojo objeto compartido con el main para wait()/notify()
+     */
     public HiloObservado(Object cerrojo) {
         super("observado");                         // nombre del hilo
         this.cerrojo = cerrojo;
     }
 
+    /**
+     * Recorre los estados: calcula (RUNNABLE), duerme (TIMED_WAITING), espera un notify() (WAITING) y vuelve a calcular.
+     */
     @Override
     public void run() {
         calcular(200);                              // 1) RUNNABLE: 200 ms usando CPU

@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.IOException;
@@ -14,6 +21,13 @@ public class Ejercicio7 {
 
     static final int[] SEGUNDOS = {3, 5, 1};
 
+    /**
+     * Lanza tres sleep en secuencial y en paralelo y compara cuánto tarda cada forma.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar un proceso
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         // ---------- Versión A: secuencial (lanzar, esperar, lanzar el siguiente) ----------
         long inicio = System.currentTimeMillis();

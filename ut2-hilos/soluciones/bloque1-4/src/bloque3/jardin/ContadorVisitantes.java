@@ -1,12 +1,19 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque3.jardin;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 3.2 – El jardín ornamental
  *
  * El único contador de visitantes del jardín.
  *
  * SOLUCIÓN (con el fallo a propósito: el bloque 3 solo pide encontrarlo y explicarlo).
  */
-package bloque3.jardin;
-
 public class ContadorVisitantes {
 
     private int cuenta = 0;     // EL DATO COMPARTIDO: las dos puertas usan este mismo objeto
@@ -19,6 +26,11 @@ public class ContadorVisitantes {
         // Esta es la SECCIÓN CRÍTICA del ejercicio.
     }
 
+    /**
+     * Visitantes contados.
+     *
+     * @return valor del contador
+     */
     public int total() {
         return cuenta;
     }

@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -15,6 +22,13 @@ import java.io.InputStreamReader;
  */
 public class Tarea2ProcessCom {
 
+    /**
+     * Lanza el comando recibido (o un ping de ejemplo), muestra su salida y, si falla, sus errores.
+     *
+     * @param args el comando y sus argumentos (opcional)
+     * @throws IOException          si no se puede lanzar el proceso o leer su salida
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         String[] comando = args.length > 0 ? args : SO.comando(
                 new String[]{"ping", "-c", "2", "127.0.0.1"},
@@ -48,6 +62,12 @@ public class Tarea2ProcessCom {
         in.close();
     }
 
+    /**
+     * Muestra la salida de error de un proceso, si la hay.
+     *
+     * @param p proceso del que leer los errores
+     * @throws IOException si falla la lectura
+     */
     private static void mostrarErrores(Process p) throws IOException {
         BufferedReader err = new BufferedReader(new InputStreamReader(p.getErrorStream()));
         String linea;

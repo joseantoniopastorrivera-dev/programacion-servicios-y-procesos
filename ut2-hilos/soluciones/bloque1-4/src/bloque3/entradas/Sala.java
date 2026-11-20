@@ -1,12 +1,19 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque3.entradas;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 3.4 – Venta de entradas
  *
  * La sesión de cine: 100 entradas.
  *
  * SOLUCIÓN (con el fallo a propósito: se corrige en el 4.2).
  */
-package bloque3.entradas;
-
 public class Sala {
 
     static final int ENTRADAS = 100;
@@ -34,6 +41,11 @@ public class Sala {
         }
     }
 
+    /**
+     * Entradas que quedan (sin protección: puede ser un valor imposible, ese es el fallo que se estudia).
+     *
+     * @return entradas disponibles
+     */
     public int getDisponibles() {
         return disponibles;
     }

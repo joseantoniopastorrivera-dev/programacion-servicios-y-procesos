@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.IOException;
@@ -14,6 +21,12 @@ import java.util.concurrent.TimeUnit;
  */
 public class Tarea1 {
 
+    /**
+     * Lanza los programas recibidos (o dos de prueba) mostrando nombre, PID e inicio; después espera 3 s por cada uno, lo elimina y muestra su código de salida.
+     *
+     * @param args los programas que lanzar (opcional)
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws InterruptedException {
         ArrayList<String[]> programas = new ArrayList<String[]>();
         if (args.length == 0) {

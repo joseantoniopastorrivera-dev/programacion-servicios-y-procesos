@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -14,6 +21,13 @@ import java.io.PrintWriter;
  */
 public class Ejercicio10 {
 
+    /**
+     * Envía operaciones a HijoCalculadora siguiendo el protocolo («a op b», «fin») y muestra cada resultado.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el hijo o comunicarse con él
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         String[] operaciones = {"3 + 4", "10 / 4", "6 * 7", "8 / 0", "hola + 2", "5 ^ 2", "20 - 25"};
         Process hijo = new ProcessBuilder("java", "-cp", "bin", "PSP.HijoCalculadora").start();

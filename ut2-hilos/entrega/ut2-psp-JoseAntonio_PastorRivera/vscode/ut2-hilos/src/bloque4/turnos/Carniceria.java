@@ -1,4 +1,13 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque4.turnos;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 4.3 – La máquina de turnos
  *
  * Cuatro clientes usan la máquina a la vez.
@@ -7,12 +16,16 @@
  * en la salida si hay repetidos: se marca cada número en un array de booleanos; si al marcarlo ya estaba
  * marcado, es un repetido.
  */
-package bloque4.turnos;
-
 public class Carniceria {
 
     static final int CLIENTES = 4;
 
+    /**
+     * Prueba la máquina de turnos tres veces con cada modo y demuestra si hay números repetidos.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera a los clientes
+     */
     public static void main(String[] args) throws InterruptedException {
         for (MaquinaTurnos.Modo modo : MaquinaTurnos.Modo.values()) {   // SIN_PROTECCION, SYNCHRONIZED, CAS
             for (int prueba = 1; prueba <= 3; prueba++) {
@@ -21,6 +34,12 @@ public class Carniceria {
         }
     }
 
+    /**
+     * Cuatro clientes sacan números a la vez; marca cada número en un boolean[] para contar los repetidos.
+     *
+     * @param modo forma de proteger la máquina
+     * @throws InterruptedException si el main es interrumpido mientras espera a los clientes
+     */
     private static void comprobar(MaquinaTurnos.Modo modo) throws InterruptedException {
         MaquinaTurnos maquina = new MaquinaTurnos(modo);
         Cliente[] clientes = new Cliente[CLIENTES];

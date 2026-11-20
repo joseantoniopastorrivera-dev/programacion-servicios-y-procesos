@@ -1,4 +1,13 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque1.descargas;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 1.1 – Descargas
  *
  * Una descarga de un fichero a 10 MB/s.
@@ -7,8 +16,6 @@
  *   - secuencial: el main llama directamente a descargar() (todo en el hilo main).
  *   - con hilos:  el main hace new Thread(descarga).start() y el hilo nuevo ejecuta run() → descargar().
  */
-package bloque1.descargas;
-
 public class Descarga implements Runnable {           // Runnable: "algo que un hilo puede ejecutar"
 
     static final int MB_POR_SEGUNDO = 10;
@@ -24,6 +31,12 @@ public class Descarga implements Runnable {           // Runnable: "algo que un 
     private final String fichero;
     private final int megas;
 
+    /**
+     * Crea una descarga simulada.
+     *
+     * @param fichero nombre del fichero que se descarga
+     * @param megas   tamaño en MB (a 10 MB/s, cada MB tarda 100 ms)
+     */
     public Descarga(String fichero, int megas) {
         this.fichero = fichero;
         this.megas = megas;

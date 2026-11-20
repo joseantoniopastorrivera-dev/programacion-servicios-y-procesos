@@ -1,12 +1,25 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque1.descargas;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 1.1 – Descargas
  *
  * Versión que descarga los ficheros a la vez.
  */
-package bloque1.descargas;
-
 public class DescargasConHilos {
 
+    /**
+     * Descarga los cinco ficheros a la vez, un hilo por fichero, y espera a todos con join().
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera a las descargas
+     */
     public static void main(String[] args) throws InterruptedException {   // join() puede lanzar InterruptedException
         Descarga[] descargas = {
                 new Descarga("video.mp4", 40),

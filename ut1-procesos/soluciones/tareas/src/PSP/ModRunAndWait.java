@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.File;
@@ -13,10 +20,17 @@ import java.io.IOException;
  */
 public class ModRunAndWait {
 
+    /**
+     * Lanza tres Sumador en paralelo, cada uno con su lista de números y su fichero de resultado, y suma los tres.
+     *
+     * @param args el nombre base de los ficheros y tres listas de números separados por comas
+     * @throws IOException          si no se puede lanzar un proceso o leer un fichero
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         if (args.length != 4) {
-            System.out.println("Uso: java -cp bin PSP.ModRunAndWait <nombreBase> <n,n,...> <n,n,...> <n,n,...>");
-            return;
+            System.err.println("Uso: java -cp bin PSP.ModRunAndWait <nombreBase> <n,n,...> <n,n,...> <n,n,...>");
+            System.exit(1);
         }
         String base = args[0];
         Process[] hijos = new Process[3];

@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 /**
@@ -9,6 +16,12 @@ package PSP;
  */
 public class Ejercicio2 {
 
+    /**
+     * Lanza un proceso y muestra su PID y el PID del propio programa Java.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws InterruptedException {
         Process calculadora = Ejercicio1.abrir("Calculadora", Ejercicio1.CALCULADORAS_LINUX, "calc.exe");
         if (calculadora != null) {

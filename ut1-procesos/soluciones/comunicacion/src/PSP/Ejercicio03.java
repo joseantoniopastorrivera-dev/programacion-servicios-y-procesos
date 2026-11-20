@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -13,6 +20,13 @@ import java.io.InputStreamReader;
  */
 public class Ejercicio03 {
 
+    /**
+     * Obtiene la hora del sistema con un proceso hijo y saluda según la franja (buenos días, tardes o noches).
+     *
+     * @param args opcional: una hora (0-23) para probar todas las franjas sin esperar
+     * @throws IOException          si no se puede lanzar el proceso o leer su salida
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         int hora;
         if (args.length > 0) {

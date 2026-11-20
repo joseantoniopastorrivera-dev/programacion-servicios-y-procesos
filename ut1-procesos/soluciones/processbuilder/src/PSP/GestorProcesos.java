@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.IOException;
@@ -19,6 +26,12 @@ public class GestorProcesos {
     private static final ArrayList<String> comandos = new ArrayList<String>();   // mismo índice que procesos
     private static final Scanner sc = new Scanner(System.in);
 
+    /**
+     * Muestra el menú del gestor y ejecuta la opción elegida hasta que el usuario sale.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el gestor es interrumpido mientras espera a un proceso
+     */
     public static void main(String[] args) throws InterruptedException {
         int opcion = 0;
         while (opcion != 5) {
@@ -37,6 +50,9 @@ public class GestorProcesos {
         }
     }
 
+    /**
+     * Pide un comando al usuario, lo lanza y lo guarda en la lista de procesos propios.
+     */
     private static void lanzar() {
         System.out.print("Comando (" + (SO.WINDOWS ? "p. ej. ping -n 100 127.0.0.1" : "p. ej. sleep 100") + "): ");
         if (!sc.hasNextLine()) {
@@ -57,6 +73,9 @@ public class GestorProcesos {
         }
     }
 
+    /**
+     * Muestra los procesos lanzados por el gestor, con su PID y si siguen vivos.
+     */
     private static void listar() {
         if (procesos.isEmpty()) {
             System.out.println("No hay procesos lanzados.");
@@ -68,6 +87,11 @@ public class GestorProcesos {
         }
     }
 
+    /**
+     * Termina uno de los procesos propios, primero con destroy() y, si no obedece, con destroyForcibly().
+     *
+     * @throws InterruptedException si el gestor es interrumpido mientras espera a que termine
+     */
     private static void terminarPropio() throws InterruptedException {
         System.out.print("PID a terminar: ");
         long pid = leerEntero();
@@ -109,6 +133,11 @@ public class GestorProcesos {
         System.out.println(pedido ? "Petición de terminar enviada." : "No se ha podido terminar (¿sin permisos?).");
     }
 
+    /**
+     * Termina los procesos propios que sigan vivos antes de salir.
+     *
+     * @throws InterruptedException si el gestor es interrumpido mientras espera a que terminen
+     */
     private static void salir() throws InterruptedException {
         for (Process p : procesos) {
             if (p.isAlive()) {
@@ -118,6 +147,11 @@ public class GestorProcesos {
         System.out.println("Hasta luego.");
     }
 
+    /**
+     * Lee un número entero del teclado, volviendo a pedirlo si no es válido.
+     *
+     * @return el número leído
+     */
     private static int leerEntero() {
         if (!sc.hasNextLine()) {                 // fin de la entrada (Ctrl+D / Ctrl+Z): equivale a «Salir»
             return 5;

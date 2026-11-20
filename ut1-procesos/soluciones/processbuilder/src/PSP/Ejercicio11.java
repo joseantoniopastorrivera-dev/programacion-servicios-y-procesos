@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.IOException;
@@ -6,8 +13,8 @@ import java.util.Iterator;
 /**
  * Ejercicio 11. Árbol de procesos: un padre, dos hijos y un nieto. Sin lambdas: con Iterator.
  *
- *   Linux   : sh -c "sh -c 'sleep 60 & wait' & sleep 60 & wait"
- *             (el & lanza en segundo plano y wait espera a los hijos)
+ *   Linux   : {@code sh -c "sh -c 'sleep 60 & wait' & sleep 60 & wait"}
+ *             (el {@code &} lanza en segundo plano y wait espera a los hijos)
  *   Windows : java -cp bin PSP.NodoArbol 2   (mismo árbol hecho con procesos Java)
  *
  * children()    = solo los hijos DIRECTOS.
@@ -15,6 +22,13 @@ import java.util.Iterator;
  */
 public class Ejercicio11 {
 
+    /**
+     * Crea un árbol de procesos (padre, dos hijos y un nieto) y lo recorre con Iterator mostrando PID y padre.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar un proceso
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         String[] comando = SO.comando(
                 new String[]{"sh", "-c", "sh -c 'sleep 60 & wait' & sleep 60 & wait"},

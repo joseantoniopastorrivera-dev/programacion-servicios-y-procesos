@@ -1,4 +1,13 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque2.autoguardado;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 2.3 – Autoguardado
  *
  * El usuario escribe durante 4 segundos y cierra el editor.
@@ -7,10 +16,14 @@
  * termina, así que, si fuera un hilo normal, el programa no acabaría nunca. Con setDaemon(true) se le
  * declara "hilo de servicio": la JVM no lo espera y lo corta en cuanto termina el main.
  */
-package bloque2.autoguardado;
-
 public class Editor {
 
+    /**
+     * Simula al usuario escribiendo durante 4 s con el autoguardado en un hilo daemon, y cierra el editor.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras «escribe»
+     */
     public static void main(String[] args) throws InterruptedException {
         StringBuilder documento = new StringBuilder();
 

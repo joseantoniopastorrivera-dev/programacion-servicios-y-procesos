@@ -1,11 +1,18 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque4.entradas;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 4.2 – Taquillas sin overbooking
  *
  * SOLUCIÓN. Clase base con lo común a todas las versiones (las entradas y el cobro). Cada versión
  * (sin proteger, solo el descuento, sincronizada, con reserva) es una subclase que implementa vender().
  */
-package bloque4.entradas;
-
 public abstract class Sala {
 
     static final int ENTRADAS = 100;
@@ -24,6 +31,11 @@ public abstract class Sala {
         }
     }
 
+    /**
+     * Entradas que quedan.
+     *
+     * @return entradas disponibles
+     */
     public synchronized int getDisponibles() {     // se lee al final, pero así es seguro siempre
         return disponibles;
     }

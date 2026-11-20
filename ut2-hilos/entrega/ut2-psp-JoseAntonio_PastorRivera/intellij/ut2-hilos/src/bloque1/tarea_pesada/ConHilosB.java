@@ -1,16 +1,29 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque1.tarea_pesada;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 1.2 – Tarea pesada sin bloquear
  *
  * Versión con hilos · SOLUCIÓN B (extends Thread), la que planteó el profesor en clase.
  *
  * Hace lo mismo que ConHilos; solo cambia cómo se crea el hilo.
  */
-package bloque1.tarea_pesada;
-
 public class ConHilosB {
 
     static final int LIMITE = 8_000_000;
 
+    /**
+     * Solución B: igual que ConHilos, pero el hilo de cálculo es una clase que extiende Thread.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera al cálculo
+     */
     public static void main(String[] args) throws InterruptedException {
         long inicio = System.currentTimeMillis();
 

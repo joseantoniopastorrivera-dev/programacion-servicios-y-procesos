@@ -1,14 +1,27 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque2.examen;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 2.2 – El examen
  *
  * El profesor da 5 segundos para el examen.
  */
-package bloque2.examen;
-
 public class Examen {
 
     static final long TIEMPO_MS = 5000;
 
+    /**
+     * Un alumno hace el examen; el profesor espera como mucho 5 s y, si no ha terminado, le interrumpe.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera
+     */
     public static void main(String[] args) throws InterruptedException {
         Alumno alumno = new Alumno("Ana");
         Thread hilo = new Thread(alumno, alumno.getNombre());

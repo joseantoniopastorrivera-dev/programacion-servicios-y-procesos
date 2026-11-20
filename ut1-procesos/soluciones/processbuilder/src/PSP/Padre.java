@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.IOException;
@@ -12,6 +19,13 @@ import java.io.IOException;
  */
 public class Padre {
 
+    /**
+     * Lanza el programa Java Hijo con varios códigos de salida y muestra el que recibe con waitFor().
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el hijo
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         int[] valores = {0, 5, 42, 300, -1};
         for (int v : valores) {

@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.BufferedReader;
@@ -14,6 +21,13 @@ import java.util.Scanner;
  */
 public class Ejercicio07 {
 
+    /**
+     * Envía una expresión a la calculadora del sistema por su entrada estándar y muestra el resultado.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el proceso o comunicarse con él
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         Scanner sc = new Scanner(System.in);
         System.out.print("Expresión" + (SO.WINDOWS ? " (sintaxis PowerShell, p. ej. 7/2 o [math]::Pow(2,10))" : "") + ": ");

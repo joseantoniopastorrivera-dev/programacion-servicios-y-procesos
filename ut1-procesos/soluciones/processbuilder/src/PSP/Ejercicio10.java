@@ -1,3 +1,10 @@
+/*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT1 · Soluciones de los ejercicios de procesos
+ * ============================================================
+ */
+
 package PSP;
 
 import java.io.IOException;
@@ -14,6 +21,13 @@ import java.util.concurrent.TimeUnit;
  */
 public class Ejercicio10 {
 
+    /**
+     * Lanza un proceso que ignora destroy() y comprueba que solo destroyForcibly() lo termina.
+     *
+     * @param args no se usan
+     * @throws IOException          si no se puede lanzar el proceso
+     * @throws InterruptedException si el padre es interrumpido mientras espera
+     */
     public static void main(String[] args) throws IOException, InterruptedException {
         String[] comando = SO.comando(
                 new String[]{"sh", "-c", "trap '' TERM; sleep 30"},

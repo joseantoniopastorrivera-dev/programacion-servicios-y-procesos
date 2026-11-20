@@ -1,4 +1,16 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque2.estados;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 2.1 – Estados de un hilo
  *
  * Programa principal: observa un hilo mientras se ejecuta y muestra sus estados.
@@ -8,13 +20,13 @@
  * y apunta el estado SOLO cuando cambia respecto al anterior ("sin repetir estados seguidos").
  * Cuando ve al hilo en WAITING, le despierta con notify() para que pueda seguir y terminar.
  */
-package bloque2.estados;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class ObservarEstados {
 
+    /**
+     * Arranca el hilo observado, apunta cada cambio de estado con getState() y muestra la secuencia.
+     *
+     * @param args no se usan
+     */
     public static void main(String[] args) {
         Object cerrojo = new Object();                      // el objeto que comparten para wait()/notify()
         HiloObservado hilo = new HiloObservado(cerrojo);

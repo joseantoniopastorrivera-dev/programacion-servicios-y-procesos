@@ -1,12 +1,19 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque3.vigilante;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 3.3 – El vigilante
  *
  * Hace rondas sin parar hasta que le avisan de que su turno ha terminado.
  *
  * SOLUCIÓN (versión del enunciado, CON el fallo): el aviso es un boolean normal (no volatile).
  */
-package bloque3.vigilante;
-
 public class Vigilante extends Thread {
 
     /**
@@ -18,6 +25,9 @@ public class Vigilante extends Thread {
 
     private long rondas = 0;
 
+    /**
+     * Crea el vigilante, en un hilo llamado "vigilante".
+     */
     public Vigilante() {
         super("vigilante");
     }
@@ -27,6 +37,9 @@ public class Vigilante extends Thread {
         turnoTerminado = true;
     }
 
+    /**
+     * Hace rondas hasta ver el aviso (sin volatile, puede no verlo nunca) y dice cuántas ha hecho.
+     */
     public void hacerRondas() {
         while (!turnoTerminado) {       // ¿ve este hilo el true que escribió el main? NO está garantizado
             rondas++;                   // una ronda (muy rápida: solo cuenta)
@@ -34,6 +47,9 @@ public class Vigilante extends Thread {
         System.out.printf("Vigilante: me he enterado del aviso. He hecho %,d rondas.%n", rondas);
     }
 
+    /**
+     * Trabajo del hilo: hacer rondas.
+     */
     @Override
     public void run() {
         hacerRondas();

@@ -1,4 +1,13 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque1.tarea_pesada;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 1.2 – Tarea pesada sin bloquear
  *
  * El cálculo largo: cuántos números primos hay hasta un límite.
@@ -6,8 +15,6 @@
  * SOLUCIÓN. Implementa Runnable para poder ejecutar el cálculo en otro hilo (versión ConHilos).
  * En la versión SinHilos se llama directamente a contar().
  */
-package bloque1.tarea_pesada;
-
 public class ContarPrimos implements Runnable {
 
     private final int limite;
@@ -19,6 +26,11 @@ public class ContarPrimos implements Runnable {
      */
     private int resultado;
 
+    /**
+     * Prepara el cálculo de los primos hasta un límite.
+     *
+     * @param limite número hasta el que se cuentan los primos (incluido)
+     */
     public ContarPrimos(int limite) {
         this.limite = limite;
     }
@@ -50,6 +62,11 @@ public class ContarPrimos implements Runnable {
         resultado = contar();
     }
 
+    /**
+     * Devuelve cuántos primos se han encontrado. Solo es fiable cuando el cálculo ha terminado (tras join()).
+     *
+     * @return número de primos hasta el límite
+     */
     public int getResultado() {
         return resultado;
     }

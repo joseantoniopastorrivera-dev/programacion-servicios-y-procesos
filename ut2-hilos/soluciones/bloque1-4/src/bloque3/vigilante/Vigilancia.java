@@ -1,4 +1,13 @@
 /*
+ * ============================================================
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · UT2 · Relación de ejercicios (bloques 1 a 4)
+ * ============================================================
+ */
+
+package bloque3.vigilante;
+
+/**
  * UT2 · Relación de ejercicios · Ejercicio 3.3 – El vigilante
  *
  * El jefe de seguridad avisa al vigilante a los 2 segundos.
@@ -8,10 +17,14 @@
  *   2) VigilanteVolatile (pregunta 2): se entera siempre.
  *   3) Cuatro VigilanteConTotal (pregunta 3): el total común no cuadra con la suma de sus rondas.
  */
-package bloque3.vigilante;
-
 public class Vigilancia {
 
+    /**
+     * Tres pruebas: aviso sin volatile, aviso con volatile y cuatro vigilantes con un total común volatile.
+     *
+     * @param args no se usan
+     * @throws InterruptedException si el main es interrumpido mientras espera
+     */
     public static void main(String[] args) throws InterruptedException {
         System.out.println("== 1) Aviso SIN volatile");
         Vigilante vigilante = new Vigilante();
