@@ -1,8 +1,8 @@
 /*
  * ============================================================
- *  Solución de repaso (no es la entrega de ningún alumno).
- *  El enunciado oficial no venía en el zip: está reconstruido en
- *  ../../../../enunciado-reconstruido.md
+ *  Alumno/a: José Antonio Pastor Rivera
+ *  PSP · Examen RA1 (09/11/2026) · Solución de repaso
+ *  Enunciado: ../../../../examen-ut1.md
  * ============================================================
  */
 
@@ -11,73 +11,87 @@ package PSP.c2;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Locale;
 
 /**
- * Ejercicio C2.1: proceso hijo que calcula las estadísticas de un grupo.
+ * Ejercicio C2.1 · Proceso hijo que calcula las estadísticas de un grupo.
  *
- * Lee una nota por línea de su ENTRADA ESTÁNDAR (el padre le conecta el fichero).
- * - Por stdout escribe UNA línea con el resultado:  nombre;validas;suma;media;maxima;minima
- * - Por stderr avisa de cada línea que no es una nota válida (0 a 10).
- * - Código de salida: 0 = hay resultado · 1 = ninguna nota válida · 2 = falta el argumento.
+ * Lee una nota por línea de su ENTRADA ESTÁNDAR (no sabe si viene de un teclado o de un fichero).
+ * <ul>
+ *   <li>Cada línea que no es una nota válida: aviso por stderr con el grupo y el número de línea.</li>
+ *   <li>Al terminar, por stdout, exactamente: CANTIDAD, MEDIA (2 decimales), MAXIMA y MINIMA.</li>
+ *   <li>Sin ninguna nota válida: aviso por stderr, sin resultados y código de salida 2.</li>
+ * </ul>
+ * Códigos de salida: 0 = correcto · 1 = falta el argumento · 2 = ninguna nota válida.
  *
- * Argumento: <nombreDelGrupo>
+ * Argumento: {@code <nombreDelGrupo>}
  */
 public class HijoEstadistica {
 
+    /**
+     * Punto de entrada: lee las notas de stdin, las valida y escribe las cuatro líneas de resultado.
+     *
+     * @param args nombre del grupo (solo se usa para identificar los avisos)
+     * @throws IOException si falla la lectura de la entrada estándar
+     */
     public static void main(String[] args) throws IOException {
-
-        // --- 1. Comprobar el argumento ---------------------------------------
         if (args.length != 1) {
             System.err.println("Uso: HijoEstadistica <nombreDelGrupo>");
-            System.exit(2);
+            System.exit(1);
         }
-        String grupo = args[0];                           // solo sirve para etiquetar la salida y los avisos
+        String grupo = args[0];
 
-        // --- 2. Acumuladores --------------------------------------------------
-        int validas = 0;                                  // cuántas notas correctas llevo
-        double suma = 0;                                  // suma de las notas correctas
-        double maxima = Double.NEGATIVE_INFINITY;         // cualquier nota real será mayor
-        double minima = Double.POSITIVE_INFINITY;         // cualquier nota real será menor
-        int numLinea = 0;                                 // para decir en qué línea está el fallo
+        int cantidad = 0;                                // notas válidas
+        double suma = 0;
+        double maxima = Double.NEGATIVE_INFINITY;        // cualquier nota real será mayor
+        double minima = Double.POSITIVE_INFINITY;        // cualquier nota real será menor
 
-        // --- 3. Leer la entrada estándar línea a línea ------------------------
-        // System.in da bytes; InputStreamReader los pasa a caracteres; BufferedReader añade readLine().
-        // El hijo no sabe ni le importa si detrás hay un teclado, una tubería o un fichero.
+        // System.in (bytes) → InputStreamReader (caracteres) → BufferedReader (readLine)
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String linea;
-        while ((linea = br.readLine()) != null) {         // null = fin de la entrada (se acabó el fichero)
+        int numLinea = 0;
+        while ((linea = br.readLine()) != null) {        // null = fin de la entrada (fin del fichero)
             numLinea++;
-            linea = linea.trim();                         // quita espacios y el \r de los ficheros de Windows
-            if (linea.isEmpty()) {
-                continue;                                 // las líneas en blanco se saltan sin avisar
+            Double nota = convertirNota(linea);
+            if (nota == null) {
+                // Los avisos van por stderr para no ensuciar stdout, que es lo que lee el padre.
+                System.err.println(grupo + ", línea " + numLinea + ": no es una nota válida: \"" + linea.trim() + "\"");
+                continue;                                // se ignora
             }
-            try {
-                double nota = Double.parseDouble(linea);  // "siete" o "NP" lanzan NumberFormatException
-                if (nota < 0 || nota > 10) {              // es un número, pero no una nota posible
-                    System.err.println("[" + grupo + "] línea " + numLinea + ": nota fuera de rango: " + linea);
-                    continue;
-                }
-                validas++;
-                suma += nota;
-                if (nota > maxima) maxima = nota;
-                if (nota < minima) minima = nota;
-            } catch (NumberFormatException e) {
-                // Los avisos van por stderr para NO ensuciar stdout, que es lo que lee el padre.
-                System.err.println("[" + grupo + "] línea " + numLinea + ": no es un número: " + linea);
-            }
+            cantidad++;
+            suma += nota;
+            maxima = Math.max(maxima, nota);
+            minima = Math.min(minima, nota);
         }
 
-        // --- 4. Sin notas válidas no hay media: se avisa con el código de salida
-        if (validas == 0) {
-            System.err.println("[" + grupo + "] no hay ninguna nota válida");
-            System.exit(1);                               // el padre lo sabrá por waitFor()
+        if (cantidad == 0) {
+            System.err.println(grupo + ": no hay ninguna nota válida");
+            System.exit(2);                              // el enunciado pide EXACTAMENTE el código 2
         }
 
-        // --- 5. Resultado por stdout, en un formato fácil de trocear ----------
-        // Se concatena en vez de usar String.format("%.2f"): en un sistema en español
-        // format escribiría "7,25" con coma y el Double.parseDouble del padre fallaría.
-        double media = suma / validas;
-        System.out.println(grupo + ";" + validas + ";" + suma + ";" + media + ";" + maxima + ";" + minima);
-        // Al terminar el main sin System.exit, el código de salida es 0.
+        // Exactamente cuatro líneas. Locale.ROOT: punto decimal siempre ("7.25", no "7,25"),
+        // así el padre puede leerla con Double.parseDouble en cualquier sistema.
+        System.out.println("CANTIDAD " + cantidad);
+        System.out.println("MEDIA " + String.format(Locale.ROOT, "%.2f", suma / cantidad));
+        System.out.println("MAXIMA " + maxima);
+        System.out.println("MINIMA " + minima);
+    }                                                    // fin del main sin exit → código 0
+
+    /**
+     * Convierte una línea en nota si es válida: un número con punto decimal opcional entre 0 y 10.
+     *
+     * @param linea texto leído (puede tener espacios o el \r de un fichero de Windows)
+     * @return la nota, o {@code null} si la línea no es una nota válida
+     */
+    static Double convertirNota(String linea) {
+        String texto = linea.trim();
+        // Solo dígitos y, opcionalmente, un punto con más dígitos: "7", "6.25", "10".
+        // Así se rechazan "siete", "NP", líneas vacías, "-1", "7,5" y cosas que parseDouble
+        // aceptaría pero no son notas: "NaN", "1e1", "7d".
+        if (!texto.matches("\\d+(\\.\\d+)?")) {
+            return null;
+        }
+        double nota = Double.parseDouble(texto);
+        return (nota >= 0 && nota <= 10) ? nota : null;  // "11" es un número, pero no una nota
     }
 }

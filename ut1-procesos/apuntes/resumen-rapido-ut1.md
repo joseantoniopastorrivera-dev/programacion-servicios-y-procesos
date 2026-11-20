@@ -1,7 +1,7 @@
 # UT1 · Procesos — Resumen rápido para el examen
 
 > **Cómo usarlo:** léelo de principio a fin en unos 40 minutos. Cada apartado tiene la idea, un ejemplo corto y la **⚠️ trampa** que suele caer en el examen.
-> **Examen (cómo fue de verdad):** un **test** difícil, con preguntas «a pillar» y muchas de **hilos**; **tres análisis de código**; y **dos ejercicios en el PC** (**Linux** + IntelliJ), C1 y C2. Las preguntas reales están en el apartado 18, el plan de estudio en el 19 y el proyecto en `../examen/`.
+> **Examen real (09/11/2026):** **A · test** de 20 preguntas (2,5 p; +1, −1/3, en blanco 0), **B · tres análisis de código** (2 p) y **práctica en el PC** (5,5 p, **Linux** + IntelliJ): C1 y C2. El enunciado completo con soluciones está en [`../examen/examen-ut1.md`](../examen/examen-ut1.md); aquí, el resumen en los apartados 12 (análisis), 13 (P7 y P8), 17 y 18 (test), y el plan de estudio en el 19.
 > Si quieres más detalle de teoría: `apuntes-ut1-procesos.md`.
 
 ---
@@ -400,18 +400,20 @@ En el examen había que explicar líneas sueltas de un fragmento. Para cada lín
 
 Repite el ejercicio con las plantillas P3, P7 y P8: son las que tienen más líneas «con trampa» (`flush`, `close`, `waitFor` con tiempo, `destroy`, `appendTo`).
 
-### Los tres análisis de código que cayeron en el examen
+### Los tres análisis de código del examen (parte B, 2 puntos)
 
-Los corrigió el profesor en clase. El código está **reconstruido** a partir de mis notas (no es el literal del examen), pero la idea de cada uno sí es la suya. Los tres están compilados y ejecutados, también en su versión «rota».
+Código **literal** del examen del 09/11/2026. El enunciado completo y las soluciones razonadas están en [`../examen/examen-ut1.md`](../examen/examen-ut1.md#parte-b--análisis-de-código-2-puntos).
 
-**Análisis 1 · ¿Qué muestra cada `print`?**
+**B1 · Predecir la salida (0,5 p).** ¿Qué imprime? Justifica cada línea.
 
 ```java
 Process p = new ProcessBuilder("sleep", "3").start();          // el hijo dura 3 s
-System.out.println("A: " + p.waitFor(1, TimeUnit.SECONDS));
+boolean fin = p.waitFor(1, TimeUnit.SECONDS);
+System.out.println("A: " + fin);
 System.out.println("B: " + p.isAlive());
 p.destroy();
 System.out.println("C: " + p.waitFor());
+System.out.println("D: " + p.isAlive());
 ```
 
 | Print | Sale | Por qué |
@@ -419,47 +421,50 @@ System.out.println("C: " + p.waitFor());
 | A | `false` | `waitFor` **con tiempo** espera como mucho 1 s y devuelve un `boolean`: ¿ha terminado? El hijo dura 3 s, así que **no**. El padre no se queda esperando: **sigue** |
 | B | `true` | Ha pasado 1 s de los 3: el hijo sigue vivo |
 | C | `143` | `destroy()` pide al hijo que termine, pero **no espera**. El `waitFor()` **sin parámetros** sí bloquea hasta que muere y devuelve su **código de salida**, que es **distinto de 0** porque no terminó por sí mismo: 128 + 15 (SIGTERM) en Linux. En Windows sale 1 |
+| D | `false` | Después del `waitFor()` el hijo ha terminado seguro |
 
 > ⚠️ Los dos `waitFor` no se parecen: con tiempo → `boolean` y no bloquea más que ese tiempo; sin parámetros → `int` (código de salida) y bloquea hasta el final.
 
-**Análisis 2 · El padre envía palabras a `sort` y se queda colgado. ¿Por qué?**
+**B2 · Encontrar el error (0,75 p).** Debería mostrar las frutas ordenadas, pero se queda colgado y no muestra nada. ¿Por qué? ¿Qué espera cada proceso? ¿Por qué no basta el `flush()`? ¿Qué línea cambiarías?
 
 ```java
 Process p = new ProcessBuilder("sort").start();
 PrintWriter pw = new PrintWriter(p.getOutputStream());
 pw.println("pera");
+pw.println("kiwi");
 pw.println("manzana");
-pw.println("uva");
 pw.flush();                                                    // ← el fallo está aquí
 BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-String l;
-while ((l = br.readLine()) != null) System.out.println(l);     // se queda parado para siempre
+String linea;
+while ((linea = br.readLine()) != null) System.out.println(linea);   // se queda parado para siempre
+System.out.println("Código: " + p.waitFor());
 ```
 
 - **El problema no es el `flush()`, es que falta el `close()`.** `flush()` envía las palabras, pero deja el canal abierto.
-- `sort` no puede ordenar hasta tener **todas** las líneas, y solo sabe que las tiene todas cuando recibe el **fin de la entrada**. Eso ocurre al **cerrar el flujo** (`pw.close()`). Mientras tanto no escribe nada.
+- `sort` no puede ordenar hasta tener **todas** las líneas, y solo sabe que las tiene todas cuando recibe el **fin de la entrada** (EOF). Eso ocurre al **cerrar el flujo** (`pw.close()`). Mientras tanto no escribe nada.
 - El padre está bloqueado en `readLine()` esperando una salida que no llega, y `sort` está bloqueado esperando más entrada: **interbloqueo**.
-- **Arreglo:** cambiar `pw.flush()` por `pw.close()`. Entonces sale `manzana`, `pera`, `uva`.
+- **Arreglo:** cambiar `pw.flush()` por `pw.close()`. Entonces sale `kiwi`, `manzana`, `pera` y `Código: 0`.
 
 > ⚠️ Lo que se cierra **no es un fichero**: es el flujo que conecta al padre con la **entrada estándar del hijo**.
+> ⚠️ **Respuesta que puntúa 0:** «crear el `PrintWriter` con autoflush, `new PrintWriter(p.getOutputStream(), true)`». Es solo otro `flush()` después de cada `println`: sigue sin haber EOF y sigue colgado.
 
-**Análisis 3 · El hijo escribe muchísimas líneas y el programa no termina. ¿Por qué?**
+**B3 · El bloqueo (0,75 p).** `Hablador` escribe tantas líneas como diga su argumento. Con 10 funciona; con 100000 se queda colgado para siempre. ¿Por qué? ¿Cómo se llama? ¿Qué línea moverías y a dónde?
 
 ```java
-Process p = new ProcessBuilder("seq", "1", "100000").start();  // escribe 100 000 líneas
-p.waitFor();                                                   // ← mal colocado
+Process p = new ProcessBuilder("java", "-cp", "bin", "PSP.Hablador", args[0]).start();
+int codigo = p.waitFor();                                      // ← mal colocado
 BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-int n = 0;
-while (br.readLine() != null) n++;
-System.out.println("Líneas: " + n);
+int lineas = 0;
+while (br.readLine() != null) lineas++;
+System.out.println(lineas + " líneas, código " + codigo);
 ```
 
 - El `waitFor()` está **demasiado arriba**: el padre espera a que el hijo termine **antes de leer** su salida.
-- La tubería tiene un **búfer limitado** (unos 64 KB en Linux). La salida no cabe: el hijo lo llena y se **bloquea** hasta que alguien lea.
-- El padre espera a que el hijo termine; el hijo espera a que el padre lea. **Interbloqueo.**
-- **Arreglo:** bajar el `waitFor()` **después** del bucle de lectura (regla de oro: primero leer, después esperar).
+- La tubería tiene un **búfer limitado** (unos 64 KB en Linux). Con 10 líneas cabe todo y el hijo termina; con 100 000 el hijo llena el búfer y se **bloquea** hasta que alguien lea.
+- El padre espera a que el hijo termine; el hijo espera a que el padre lea. **Interbloqueo** (*deadlock*).
+- **Arreglo:** mover `int codigo = p.waitFor();` **después** del bucle de lectura, justo antes del `println` (regla de oro: primero leer, después esperar).
 
-> ⚠️ **No es un problema de tiempo.** No es que «no dé tiempo a leer»: es que ninguno de los dos puede avanzar, por mucho que se espere. Con una salida pequeña, que cabe en el búfer, el mismo código funciona; por eso el fallo engaña.
+> ⚠️ **No es un problema de tiempo de procesamiento.** No es que «100 000 líneas tarden más»: es que ninguno de los dos puede avanzar, por mucho que se espere. Esa respuesta (por «tiempo») no puntúa.
 
 ---
 
@@ -550,51 +555,61 @@ System.out.println("El hijo devolvió " + resultado + " (código " + p.waitFor()
 ```
 
 **P7 · Lanzar con límite de tiempo, salida a un fichero y tres finales (el C1 del examen)**
+
+Salida **exacta** que pedía el enunciado: `Tarea lanzada con PID …` · `La tarea no ha terminado en N s: se destruye` · `Tarea correcta` / `La tarea ha fallado (código N)` · cada línea del log precedida de `[TAREA]`.
 ```java
-ProcessBuilder pb = new ProcessBuilder("java", "-cp", "bin", "PSP.c1.Tarea", "8", "0");
+ProcessBuilder pb = new ProcessBuilder("java", "-cp", "bin", "PSP.c1.Tarea", args[0], args[1]);
 File log = new File("tarea.log");
-pb.redirectOutput(log);                              // > tarea.log
+pb.redirectOutput(log);                              // > tarea.log (new File = sobrescribe)
 pb.redirectErrorStream(true);                        // los errores, al mismo fichero
 Process p = pb.start();
+System.out.println("Tarea lanzada con PID " + p.pid());
 
-if (p.waitFor(3, TimeUnit.SECONDS)) {                // true = terminó a tiempo (devuelve boolean, NO el código)
-    int codigo = p.exitValue();                      // seguro: ya ha terminado
-    System.out.println(codigo == 0 ? "Terminó bien" : "Terminó con error " + codigo);
-} else {
+long max = Long.parseLong(args[2]);
+if (!p.waitFor(max, TimeUnit.SECONDS)) {             // false = NO terminó a tiempo (devuelve boolean, NO el código)
+    System.out.println("La tarea no ha terminado en " + max + " s: se destruye");
     p.destroy();                                     // SIGTERM; no espera
     if (!p.waitFor(2, TimeUnit.SECONDS)) p.destroyForcibly();
-    System.out.println("Destruida, código " + p.waitFor());     // 143 en Linux
 }
+int codigo = p.waitFor();                            // sin tiempo: el CÓDIGO (143 si se destruyó, en Linux)
+System.out.println(codigo == 0 ? "Tarea correcta" : "La tarea ha fallado (código " + codigo + ")");
 
 try (BufferedReader br = new BufferedReader(new FileReader(log))) {   // se lee el FICHERO, no la tubería
     String l;
-    while ((l = br.readLine()) != null) System.out.println(l);
+    while ((l = br.readLine()) != null) System.out.println("[TAREA] " + l);
 }
 ```
 > ⚠️ `int c = p.waitFor(3, TimeUnit.SECONDS);` **no compila**: con tiempo devuelve `boolean`.
 > ⚠️ Con la salida redirigida, `p.getInputStream()` no trae nada. Hay que abrir el fichero con `FileReader`.
+> ⚠️ **Copia los mensajes del enunciado literalmente**: «cumplimiento de los requisitos funcionales» se corrige comparando la salida.
 
 **P8 · Hijo que valida lo que lee y padre con redirecciones (el C2 del examen)**
+
+El hijo escribe **exactamente cuatro líneas** (`CANTIDAD`, `MEDIA` con 2 decimales, `MAXIMA`, `MINIMA`) y, sin notas válidas, termina con **código 2**. El padre muestra el **PID** de cada hijo y calcula la media global con `CANTIDAD × MEDIA`.
 ```java
 // HIJO (PSP/c2/HijoEstadistica.java): lee notas por stdin; datos → stdout, avisos → stderr
 BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-int validas = 0;
-double suma = 0;
+int cantidad = 0, numLinea = 0;
+double suma = 0, max = Double.NEGATIVE_INFINITY, min = Double.POSITIVE_INFINITY;
 String linea;
 while ((linea = br.readLine()) != null) {            // null = se acabó la entrada
-    linea = linea.trim();
-    if (linea.isEmpty()) continue;
-    try {
-        double nota = Double.parseDouble(linea);     // "siete" → NumberFormatException
-        if (nota < 0 || nota > 10) { System.err.println("Fuera de rango: " + linea); continue; }
-        validas++;
-        suma += nota;
-    } catch (NumberFormatException e) {
-        System.err.println("No es un número: " + linea);
+    numLinea++;
+    String s = linea.trim();
+    if (!s.matches("\\d+(\\.\\d+)?") || Double.parseDouble(s) > 10) {   // "siete", "", "-1", "11", "NaN"…
+        System.err.println(args[0] + ", línea " + numLinea + ": no es una nota válida: " + s);
+        continue;
     }
+    double nota = Double.parseDouble(s);
+    cantidad++; suma += nota; max = Math.max(max, nota); min = Math.min(min, nota);
 }
-if (validas == 0) System.exit(1);                    // sin datos: se avisa con el código de salida
-System.out.println(args[0] + ";" + validas + ";" + suma);
+if (cantidad == 0) {
+    System.err.println(args[0] + ": no hay ninguna nota válida");
+    System.exit(2);                                  // el código que pide el enunciado
+}
+System.out.println("CANTIDAD " + cantidad);
+System.out.println("MEDIA " + String.format(Locale.ROOT, "%.2f", suma / cantidad));   // punto decimal siempre
+System.out.println("MAXIMA " + max);
+System.out.println("MINIMA " + min);
 
 // PADRE: un hijo por grupo, TODOS lanzados antes de esperar a ninguno
 String[] grupos = {"grupoA", "grupoB", "grupoC"};
@@ -602,26 +617,37 @@ Process[] hijos = new Process[grupos.length];
 for (int i = 0; i < grupos.length; i++) {
     ProcessBuilder pb = new ProcessBuilder("java", "-cp", "bin", "PSP.c2.HijoEstadistica", grupos[i]);
     pb.redirectInput(new File("datos/" + grupos[i] + ".txt"));                 // < datos/grupoA.txt
-    pb.redirectError(Redirect.appendTo(new File("errores.log")));              // 2>> errores.log
+    pb.redirectError(Redirect.appendTo(new File("errores.log")));              // 2>> errores.log (sin borrar)
     hijos[i] = pb.start();                                                     // stdout sigue en la tubería
+    System.out.println("Lanzado " + grupos[i] + " con PID " + hijos[i].pid());
 }
 int total = 0;
 double sumaTotal = 0;
-for (Process p : hijos) {
-    BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
-    String respuesta = br.readLine();                // primero leer…
-    if (p.waitFor() == 0 && respuesta != null) {     // …después waitFor
-        String[] partes = respuesta.split(";");
-        total += Integer.parseInt(partes[1]);
-        sumaTotal += Double.parseDouble(partes[2]);
+for (int i = 0; i < hijos.length; i++) {
+    int cantidad = 0; double media = 0;
+    BufferedReader br = new BufferedReader(new InputStreamReader(hijos[i].getInputStream()));
+    String l;
+    while ((l = br.readLine()) != null) {            // primero leer TODO…
+        System.out.println(grupos[i] + ": " + l);
+        String[] partes = l.split(" ");
+        if (partes[0].equals("CANTIDAD")) cantidad = Integer.parseInt(partes[1]);
+        if (partes[0].equals("MEDIA")) media = Double.parseDouble(partes[1]);
     }
+    int codigo = hijos[i].waitFor();                 // …después waitFor
+    if (codigo != 0) {
+        System.out.println(grupos[i] + ": terminó con código " + codigo + ", no se tiene en cuenta");
+        continue;
+    }
+    total += cantidad;
+    sumaTotal += cantidad * media;                   // CANTIDAD × MEDIA
 }
-System.out.println("Media global: " + sumaTotal / total);
+System.out.printf("Media global: %.2f%n", sumaTotal / total);
 ```
-> ⚠️ **Media global = suma de todas las notas ÷ número de notas.** La media de las medias está mal si los grupos tienen distinto tamaño.
-> ⚠️ `String.format("%.2f", 7.25)` escribe **`7,25`** en un sistema en español y el `Double.parseDouble` del padre falla. Concatena, o usa `String.format(Locale.US, …)`.
-> ⚠️ Con `redirectError(new File("errores.log"))` cada hijo **borra** lo que escribió el anterior. Para compartir el fichero, `Redirect.appendTo`.
+> ⚠️ **Media global = suma de todas las notas ÷ número de notas** = Σ(CANTIDAD × MEDIA) ÷ Σ CANTIDAD. La media de las medias está mal si los grupos tienen distinto tamaño.
+> ⚠️ `String.format("%.2f", 7.25)` escribe **`7,25`** en un sistema en español y el `Double.parseDouble` del padre falla. Usa `String.format(Locale.ROOT, …)` (o `Locale.US`).
+> ⚠️ Con `redirectError(new File("errores.log"))` cada hijo **borra** lo que escribió el anterior. Para compartir el fichero, `Redirect.appendTo`. Y **no** borres el fichero al empezar: el enunciado dice «sin borrar lo que hubiera».
 > `Redirect` necesita `import java.lang.ProcessBuilder.Redirect;` (o escribir `ProcessBuilder.Redirect.appendTo`).
+> La versión completa, con métodos y Javadoc (el C2.3), está en `../examen/solucion/`.
 
 **Imports que necesitas:** `java.io.*`, `java.util.*`, `java.util.concurrent.TimeUnit`, `java.lang.ProcessBuilder.Redirect`.
 
@@ -682,163 +708,57 @@ Cayó dos veces: **seis preguntas del test** (apartado 18, de la 10 a la 15) y l
 
 ## 17. Cómo fue el examen real
 
-No pude asistir. Lo que sigue sale del proyecto que se repartió en el aula y de lo que contaron los compañeros. Está todo en `../examen/`: el proyecto original sin resolver, la solución comentada y `enunciado-reconstruido.md`.
+Lunes **09/11/2026**. No pude asistir; el enunciado está transcrito de las fotos del examen de un compañero y de la solución oficial del test: [`../examen/examen-ut1.md`](../examen/examen-ut1.md).
 
-1. **Test**, difícil y «a pillar», con casi la mitad de las preguntas sobre **hilos** → las 15 preguntas reales están en el apartado 18.
-2. **Tres análisis de código** (qué muestra cada `print` y por qué se cuelga) → están en el apartado 12.
-3. **C1 · `EjecutorTareas <segundos> <codigo> <esperaMaxima>`** → plantilla **P7**. Lanza una clase `Tarea` ya hecha, redirige su salida a `tarea.log`, la espera con límite y distingue tres finales: bien, con error y destruida.
-4. **C2 · `HijoEstadistica` + `Padre`** → plantilla **P8**. Un hijo por grupo que lee notas por stdin (con datos no válidos puestos a propósito), redirecciones de entrada y de errores, media global y la **reflexión sobre hilos** (apartado 16).
+| Parte | Puntos | Contenido | Dónde repasarlo |
+|---|---|---|---|
+| **A · Test** | 2,5 | 20 preguntas · +1 acierto, **−1/3 error**, 0 en blanco | Apartado 18 |
+| **B · Análisis de código** | 2 | B1 predecir la salida (0,5) · B2 `sort` sin `close()` (0,75) · B3 `waitFor()` antes de leer (0,75) | Apartado 12 |
+| **C1 · Ejecutor de tareas** | 2 | Lanzar `Tarea`, salida a `tarea.log`, espera con límite, destruir, código, log con `[TAREA]` | Plantilla **P7** |
+| **C2 · Analizador de notas en paralelo** | 3,5 | C2.1 hijo (0,75) · C2.2 padre (2) · **C2.3 documentación** (0,25) · **C2.4 reflexión** hilos o procesos (0,5) | Plantilla **P8** y apartado 16 |
 
-**Detalles de la entrega que restan puntos si se olvidan:**
-- Escribir **nombre y apellidos** en la cabecera de cada clase (había un `TODO` para eso).
-- **No modificar** las clases marcadas como ya hechas (`Tarea`).
-- Entregar un zip del proyecto **sin la carpeta `bin`**.
-- Probar con las **configuraciones de ejecución** que vienen en el desplegable: traen ya los argumentos de cada caso.
+**Lo que restaba puntos y hay que vigilar:**
+- **Salida exacta:** mensajes y formato de líneas copiados del enunciado (`CANTIDAD`, `MEDIA` con 2 decimales…), y los **códigos de salida** que pide (2 si no hay notas).
+- **Criterios:** compila y se ejecuta · requisitos · código **claro y comentado** · mensajes claros y **manejo de errores** (argumentos que faltan o no son números, datos no válidos).
+- **C2.3:** comentar clases y métodos: qué hacen, qué reciben y qué devuelven (Javadoc con `@param`, `@return` y `@throws`).
+- Nombre y apellidos en la **cabecera de cada clase**; **no modificar** `Tarea`.
+- Entrega: **`Apellidos_Nombre.zip` sin `bin`**, subido por el **cuestionario** del aula.
+- Sin Internet ni IA.
 
-**Para repetirlo como simulacro:** copia `../examen/ut1-examen-alumno/` a otra carpeta, ábrela en IntelliJ, resuélvelo en 90 minutos sin mirar y compáralo con `../examen/solucion/`.
+**Para repetirlo como simulacro:** copia `../examen/ut1-examen-alumno/` a otra carpeta, ábrela en IntelliJ, haz las partes A y B en papel (40 min) y la práctica (90 min) sin mirar, y compáralo con `examen-ut1.md` y `../examen/solucion/`.
 
 ---
 
 ## 18. Preguntas del test real
 
-Son las 15 preguntas que copié mientras el profesor corregía el examen en clase. **Tapa la respuesta, contesta y luego comprueba.**
+Las **20 preguntas completas**, con sus opciones, están en [`../examen/examen-ut1.md`](../examen/examen-ut1.md#parte-a--tipo-test-25-puntos). Hazlas allí con la hoja de respuestas y corrige con esta plantilla (**oficial**, de la solución publicada por el profesor):
 
-Cómo leer las marcas:
-- ✅ respuesta **confirmada por el profesor**.
-- 🔎 respuesta **mía**: no llegué a copiar la suya.
-- Las opciones en *cursiva* las he añadido yo para completar la pregunta; el resto son las del examen, tal como las apunté.
+| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| a | c | d | b | b | a | d | c | a | b | d | d | c | a | b | c | a | d | b | c |
 
-Casi la mitad del test (preguntas 10 a 15) es de **procesos frente a hilos**: repasa el apartado 16.
+**Nota del test** = (aciertos − errores / 3) / 20 × 2,5. Contestar al azar entre 4 opciones da 0 de media: **deja en blanco si no puedes descartar ninguna**; si descartas una, contesta.
 
-### Conceptos generales
+**Qué preguntaba cada bloque** (y a qué apartado ir si fallas):
 
-**1. ¿Cuál es un ámbito de la programación concurrente?**
-> **Incompleta:** no copié las opciones ni la respuesta. Lo que hay que saber: la programación concurrente abarca la **multitarea en un solo procesador** (los procesos se intercalan), la programación **paralela** (varios procesadores a la vez) y la **distribuida** (varios ordenadores en red). Apartado 2.
+| Preguntas | Tema | Apartados |
+|---|---|---|
+| 1-5 | Concurrente, paralela (varios núcleos, un equipo), distribuida (varios equipos en red), ámbitos | 2 |
+| 6-7 | Programa frente a proceso, quién ejecuta un `.class` (la JVM) | 1, 6 |
+| 8-14 | Estados (bloqueado por E/S, listo al agotar el cuanto), cambio de contexto y su coste, apropiativa, quién crea procesos, cola de preparados | 3, 4, 5 |
+| 15-20 | Hilos frente a procesos: qué comparten, PID, coste, variable compartida, pestañas del navegador, cómo se pasan datos | 16 |
 
-**2. Un proyecto científico reparte el cálculo entre muchos ordenadores. ¿Qué tipo de programación es?**
-- a) Paralela en un sistema fuertemente acoplado
-- b) Distribuida
-- c) *Secuencial*
-- d) *Concurrente en un único procesador*
-
-> ✅ **b) Distribuida.** Son equipos independientes conectados por red. «Fuertemente acoplado» es la trampa: significa varios procesadores que **comparten memoria** dentro de una misma máquina.
-
-**3. Si ejecuto con `java` dos veces el mismo programa, ¿cuántos procesos tengo?**
-- a) *Uno, porque es el mismo programa*
-- b) Dos
-- c) *Uno, con dos hilos*
-- d) *Ninguno hasta que el programa llame a `start()`*
-
-> 🔎 **b) Dos.** Cada ejecución de `java` arranca su propia JVM: dos procesos, con PID y memoria distintos. Un programa puede tener varios procesos.
-
-**4. ¿Qué ejecuta realmente el código de `Hijo.class`?**
-- a) *El sistema operativo, directamente*
-- b) La JVM
-- c) *El compilador `javac`*
-- d) *El procesador, directamente*
-
-> ✅ **b) La JVM.** Un `.class` es bytecode, no un ejecutable. El proceso que ve el sistema operativo es `java`.
-
-### Estados y planificación
-
-**5. Un programa está parado esperando una línea que tiene que escribir el usuario. ¿En qué estado está?**
-- a) *Listo*
-- b) Bloqueado
-- c) *En ejecución*
-- d) *Terminado*
-
-> ✅ **b) Bloqueado.** Espera una entrada/salida y no gasta CPU. «Listo» es la trampa: listo es el que **podría** ejecutarse y solo espera su turno.
-
-**6. En un planificador de tiempo compartido, al proceso se le quita la CPU porque se le acaba el tiempo. ¿Qué transición es?**
-- a) *De En ejecución a Bloqueado*
-- b) De En ejecución a Listo
-- c) *De Listo a En ejecución*
-- d) *De Bloqueado a Listo*
-
-> 🔎 **b) De En ejecución a Listo.** Agotar el quantum no bloquea al proceso: sigue pudiendo ejecutarse, así que vuelve a la cola de listos.
-
-**7. ¿Qué guarda el sistema operativo al hacer un cambio de contexto?**
-> ✅ La opción correcta era siempre la que reunía **el estado del proceso, los registros y la información de memoria**. Las demás opciones no las copié. Las que dejan fuera alguna de las tres cosas, o hablan del código fuente o del `.class`, son falsas.
-
-**8. En la planificación apropiativa…**
-- a) Solo se cambia de proceso cuando el que se ejecuta termina o se bloquea
-- b) El usuario decide qué proceso se ejecuta
-- c) Un proceso más prioritario puede quitarle la CPU al que se está ejecutando
-- d) *Los procesos se ejecutan siempre en orden de llegada, hasta terminar*
-
-> ✅ **c).** Apropiativa = con desalojo: el sistema operativo le **quita** la CPU. La a) describe justo lo contrario, la planificación **sin** desalojo (cooperativa).
-
-**9. ¿Quién crea un proceso nuevo?**
-- a) El propio proceso, al ejecutarse
-- b) El hardware del PC, sin que intervenga el sistema operativo
-- c) Siempre el sistema operativo, a petición de otro proceso
-- d) El compilador, al generar el `.class`
-
-> ✅ **c).** Todo proceso tiene un padre que lo pide con una llamada al sistema (`fork`/`exec`, `CreateProcess`). En Java, eso es lo que hay debajo de `pb.start()`.
-
-### Procesos frente a hilos
-
-**10. ¿Qué comparten los hilos de un mismo proceso?**
-- a) El PID
-- b) La pila de llamadas
-- c) La memoria del proceso
-- d) El código fuente, pero no los datos
-
-> ✅ **c) La memoria del proceso.** La pila es justo lo que **no** comparten: cada hilo tiene la suya. La d) es falsa porque los datos sí se comparten.
-> Sobre la a): los hilos de un proceso están todos bajo el mismo PID (pregunta 11), así que apunté esa opción resumida; seguramente estaba redactada de otra forma. La que hay que marcar es la memoria.
-
-**11. Un programa en ejecución tiene tres hilos trabajando. ¿Cuántos PID tiene?**
-- a) Uno
-- b) *Tres*
-- c) *Cuatro: uno del proceso y uno por hilo*
-- d) *Ninguno: los hilos no tienen PID*
-
-> ✅ **a) Uno, el del proceso.** El PID identifica al proceso, no a sus hilos.
-
-**12. Comparado con un proceso, un hilo es…**
-- a) Más costoso
-- b) Más ligero
-- c) *Igual de costoso, pero más seguro*
-- d) *Más lento de crear, pero más rápido al ejecutarse*
-
-> ✅ **b) Más ligero.** Crearlo y cambiar de uno a otro cuesta menos, porque no hay que crear ni cambiar un espacio de memoria.
-
-**13. Un hilo modifica por error una variable compartida. ¿A quién afecta?**
-- a) Solo al hilo que la ha modificado
-- b) A todos los hilos del proceso
-- c) *A todos los procesos del sistema*
-- d) *A nadie: cada hilo tiene su copia*
-
-> ✅ **b) A todos los hilos del proceso.** Comparten la memoria, así que todos ven el valor estropeado. Es el precio de no tener aislamiento.
-
-**14. ¿Por qué los navegadores ejecutan cada pestaña en un proceso distinto?**
-- a) Por aislamiento
-- b) Porque el sistema operativo no deja crear hilos
-- c) *Porque los procesos consumen menos memoria que los hilos*
-- d) *Porque así las pestañas comparten los datos más fácilmente*
-
-> 🔎 **a) Por aislamiento.** Si una pestaña falla o se cuelga, las demás siguen funcionando, y una página no puede leer la memoria de otra. Es la pregunta 13 vista al revés. La b) es falsa: el sistema operativo sí deja crear hilos.
-
-**15. ¿Cómo se pasan datos entre procesos y entre hilos?**
-- a) Los dos, mediante la memoria compartida del sistema operativo
-- b) Los procesos, mediante flujos y tuberías; los hilos, mediante la memoria que comparten
-- c) Los dos, mediante el código de salida
-- d) *Los dos, mediante variables globales*
-
-> 🔎 **b).** Los procesos no comparten memoria, así que necesitan un canal (stdin/stdout, tuberías, ficheros, sockets). Los hilos leen y escriben directamente las mismas variables. El código de salida solo devuelve un número pequeño, y solo lo tienen los procesos.
-
-### Plantilla de respuestas
-
-| 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| — | b | b | b | b | b | — | c | c | c | a | b | b | a | b |
+**Las trampas que más fallaron** (en el examen corregido que tengo, 3 errores fueron estas):
+- **8 · `nextLine()` esperando al usuario → bloqueado**, no «en ejecución» ni «listo»: espera una E/S y aunque tuviera la CPU no podría avanzar.
+- **9 · se le acaba el cuanto → listo**, no «bloqueado»: no espera nada salvo la CPU.
+- **16 · 3 hilos → 1 PID**: el PID es del proceso, no de cada hilo.
 
 ---
 
 ## 19. Plan de estudio para la recuperación
 
-1. **Test (45 min).** Apartado 18 con las respuestas tapadas. Cada fallo, al apartado que toca: 1-4 → apartados 1, 2 y 6; 5-9 → apartados 3 y 4; 10-15 → apartado 16.
-2. **Análisis de código (30 min).** Los tres del apartado 12, en voz alta y sin mirar la explicación. Después, los ejercicios A a I de «¿Qué sale por pantalla?».
-3. **Práctica (90 min).** Simulacro con `../examen/ut1-examen-alumno/` y comparación con `../examen/solucion/`.
-4. **Reflexión escrita (10 min).** Escribir de memoria la respuesta modelo del apartado 16.
+1. **Test (45 min).** Las 20 preguntas de `examen-ut1.md` con la hoja de respuestas. Cada fallo, a su apartado (tabla del 18).
+2. **Análisis de código (30 min).** B1, B2 y B3 del apartado 12, en voz alta y sin mirar la explicación. Después, los ejercicios A a I de «¿Qué sale por pantalla?».
+3. **Práctica (90 min).** Simulacro con `../examen/ut1-examen-alumno/` siguiendo el enunciado de `examen-ut1.md` y comparación con `../examen/solucion/`. Comprueba que tu salida es **idéntica** a la del enunciado.
+4. **Documentación y reflexión (15 min).** Javadoc de un método de memoria y la reflexión del apartado 16 (ventaja e inconveniente de hilos frente a procesos).
 5. **La víspera.** Solo los ⚠️ de todo el documento, el apartado 15 y la plantilla de respuestas.

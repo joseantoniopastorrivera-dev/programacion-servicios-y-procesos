@@ -12,7 +12,7 @@ Programación multihilo, procesos concurrentes, sockets de red y comunicación s
   * **`ejercicios/soluciones-*.md`**: los 12 ejercicios de ProcessBuilder y los 15 de comunicación explicados línea a línea, con sus reflexiones.
   * **`apuntes/resumen-rapido-ut1.md`** (y `.pdf`): resumen rápido para repasar antes del examen, con las preguntas del test real.
   * **`soluciones/`**: código de todas las soluciones y de las Tareas 1, 2 y 4, válido en Linux y en Windows (ver `LEEME.md`).
-  * **`examen/`**: examen de la UT1 con el enunciado reconstruido (`enunciado-reconstruido.md`), el proyecto tal como se entrega al alumno (`ut1-examen-alumno/`) y su resolución (`solucion/`).
+  * **`examen/`**: examen real de la UT1 (09/11/2026) transcrito con sus soluciones (`examen-ut1.md`), el proyecto tal como se entrega al alumno (`ut1-examen-alumno/`) y su resolución (`solucion/`).
 * **`ut2-hilos/`**:
   * **`apuntes/`**: Teoría, documentación y ejemplos sobre programación multihilo y sincronización.
   * **`ejercicios/`**: relación de ejercicios (`ejercicios-ut2.docx`), proyecto IntelliJ `bloque1-4` sin resolver y `soluciones-ejercicios-ut2.md` con las respuestas.
