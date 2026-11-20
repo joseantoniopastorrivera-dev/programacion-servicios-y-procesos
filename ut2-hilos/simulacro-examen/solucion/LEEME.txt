@@ -1,0 +1,39 @@
+SIMULACRO EXAMEN UT2 (HILOS) · PARTE PRÁCTICA
+==========================================
+
+CÓMO ABRIRLO EN INTELLIJ
+1. Copia la carpeta ut2-simulacro-alumno a otro sitio (así no tocas el original).
+2. En IntelliJ: File > Open... y selecciona esa carpeta (la que contiene este fichero).
+3. Si aparece el aviso "Project JDK is not defined", "Setup SDK" o "JDK ... is missing",
+   pulsa en él y elige tu JDK (versión 11 o superior).
+
+CLASES QUE TIENES QUE COMPLETAR (tienen un // TODO)
+  Paquete PSP.c1 (ejercicio C1 · Despliegue):
+    Tarea               Ejercicio C1.1
+    Despliegue          Ejercicio C1.2 y C1.3 (reflexión en el comentario inicial)
+  Paquete PSP.c2 (ejercicio C2 · Carrera):
+    Corredor            YA ESTÁ HECHA: no la modifiques
+    Meta                Ejercicio C2.1
+    Carrera             Ejercicio C2.2
+  Paquete PSP.c3 (ejercicio C3 · Vocales):
+    Recuento            Ejercicio C3.1
+    ContadorVocal       Ejercicio C3.2
+    ContarVocales       Ejercicio C3.3 y C3.4 (reflexión en el comentario inicial)
+
+CONFIGURACIONES DE EJECUCIÓN (desplegable junto al botón de ejecutar)
+  C1 · Despliegue (orden normal)
+  C1 · Despliegue inverso
+  C2 · Carrera 4 5 (llegan todos)
+  C2 · Carrera 4 2 (hay retirados)
+  C2 · Carrera 7 3 (error de argumentos)
+  C3 · ContarVocales datos/texto.txt
+
+IMPORTANTE
+- El proyecto compila en la carpeta bin.
+- IntelliJ ejecuta los programas desde la raíz del proyecto: la ruta
+  datos/texto.txt funciona tal cual.
+- Ejecuta cada programa varias veces: con hilos, que salga bien una vez
+  no demuestra que esté bien.
+
+ENTREGA
+- Un zip Apellidos_Nombre.zip con el proyecto completo, SIN la carpeta bin.

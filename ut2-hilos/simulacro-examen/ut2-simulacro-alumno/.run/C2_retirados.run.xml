@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="C2 · Carrera 4 2 (hay retirados)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="PSP.c2.Carrera" />
+    <module name="UT2_Simulacro_Alumno" />
+    <option name="PROGRAM_PARAMETERS" value="4 2" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="C1 · Despliegue (orden normal)" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="PSP.c1.Despliegue" />
+    <module name="UT2_Simulacro_Alumno" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
